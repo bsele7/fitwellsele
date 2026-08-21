@@ -932,6 +932,64 @@ const HABITS = [
 ];
 
 // =====================================================================
+//  BADGE E TRAGUARDI
+// =====================================================================
+// Ogni badge definisce una condizione basata sullo storico giornate salvate
+// (array "hist" prodotto da loadHistory()) e sui contatori già calcolati
+// in renderProgress() (giorni tracciati, allenamenti completati, ecc.)
+const BADGES = [
+    {
+        id: "b1",
+        icon: "🟣",
+        name: "Primo passo",
+        desc: "Salva la tua prima giornata",
+        check: (hist) => hist.length >= 1
+    },
+    {
+        id: "b2",
+        icon: "💧",
+        name: "Idratato",
+        desc: "Raggiungi 8 bicchieri in una giornata",
+        check: (hist) => hist.some(d => (d.water || 0) >= 8)
+    },
+    {
+        id: "b3",
+        icon: "✅",
+        name: "Costanza",
+        desc: "Completa tutte le 7 abitudini in un giorno",
+        check: (hist) => hist.some(d => d.habTotal > 0 && d.habDone >= d.habTotal)
+    },
+    {
+        id: "b4",
+        icon: "💪",
+        name: "Allenamento completato",
+        desc: "Completa almeno l'80% degli esercizi in un giorno",
+        check: (hist) => hist.some(d => d.wkTotal > 0 && (d.wkDone / d.wkTotal) >= 0.8)
+    },
+    {
+        id: "b5",
+        icon: "🔥",
+        name: "Settimana attiva",
+        desc: "Salva 5 giornate",
+        check: (hist) => hist.length >= 5
+    },
+    {
+        id: "b6",
+        icon: "🏆",
+        name: "Atleta costante",
+        desc: "Completa 5 allenamenti (almeno 80% esercizi)",
+        check: (hist) => hist.filter(d => d.wkTotal > 0 && (d.wkDone / d.wkTotal) >= 0.8).length >= 5
+    },
+    {
+        id: "b7",
+        icon: "🌟",
+        name: "Mese di benessere",
+        desc: "Salva 20 giornate",
+        check: (hist) => hist.length >= 20
+    }
+];
+
+// =====================================================================
 //  SVUOTAFRIGO DATA
 // =====================================================================
 const INGREDIENTS = [
@@ -2389,6 +2447,34 @@ function loadHistory() {
     return arr.sort((a,b) => b.dateKey.localeCompare(a.dateKey));
 }
 
+function renderBadges(hist, stats) {
+    const grid = document.getElementById('badge-grid');
+    const summary = document.getElementById('progress-summary');
+    if (!grid || !summary) return;
+
+    const unlockedBadges = BADGES.filter(b => b.check(hist));
+    const unlockedIds = new Set(unlockedBadges.map(b => b.id));
+
+    grid.innerHTML = BADGES.map(b => `
+        <div class="badge-card ${unlockedIds.has(b.id) ? 'unlocked' : ''}">
+            <div class="badge-icon">${b.icon}</div>
+            <div class="badge-name">${b.name}</div>
+            <div class="badge-desc">${b.desc}</div>
+        </div>
+    `).join('');
+
+    const nextBadge = BADGES.find(b => !unlockedIds.has(b.id));
+    summary.innerHTML = `
+        <div class="summary-title">📈 Riepilogo traguardi</div>
+        <div class="summary-row"><span>Badge sbloccati</span><span><b>${unlockedBadges.length}/${BADGES.length}</b></span></div>
+        <div class="summary-row"><span>Giorni tracciati</span><span><b>${stats.days}</b></span></div>
+        <div class="summary-row"><span>Allenamenti completati</span><span><b>${stats.wkComp}</b></span></div>
+        <div class="summary-row"><span>Media acqua</span><span><b>${stats.avgW} bicchieri</b></span></div>
+        <div class="summary-row"><span>Media abitudini</span><span><b>${stats.avgH}%</b></span></div>
+        ${nextBadge ? `<div class="summary-row"><span>Prossimo obiettivo</span><span><b>${nextBadge.icon} ${nextBadge.name}</b></span></div>` : `<div class="summary-row"><span>🎉 Tutti i badge sbloccati!</span><span></span></div>`}
+    `;
+}
+
 function renderProgress() {
     const hist = loadHistory();
     document.getElementById('st-days').textContent = hist.length;
@@ -2398,6 +2484,8 @@ function renderProgress() {
     document.getElementById('st-water').textContent = avgW;
     const avgH = hist.length ? Math.round(hist.reduce((s,d) => s+(d.habDone/(d.habTotal||1)),0)/hist.length*100) : 0;
     document.getElementById('st-habits').textContent = avgH + '%';
+
+    renderBadges(hist, { days: hist.length, wkComp, avgW, avgH });
 
     const c = document.getElementById('history-list');
     if (!hist.length) {
