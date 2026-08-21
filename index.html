@@ -405,6 +405,39 @@
         }
         .recipe-video-link:hover { background: #FECACA; }
 
+        /* ====== SVUOTAFRIGO ====== */
+        .svuotafrigo-card { border-left: 4px solid var(--primary); }
+        .ingredient-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 10px; }
+        .ing-tag {
+            background: #F3F4F6; border: 1px solid var(--border); border-radius: 18px;
+            padding: 5px 12px; font-size: 0.75rem; font-weight: 500; color: var(--text);
+            cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .ing-tag:hover { background: #EDE9FE; border-color: var(--primary-light); }
+        .ing-tag.selected {
+            background: var(--primary); color: white; border-color: var(--primary);
+            box-shadow: 0 2px 6px rgba(124,58,237,0.25);
+        }
+        .custom-ing-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .custom-ing-row .field-input { flex: 1; margin-bottom: 0; }
+        .recipe-results { margin-top: 14px; }
+        .recipe-result {
+            background: #F9FAFB; border-radius: 12px; padding: 14px; margin-bottom: 10px;
+            border-left: 3px solid var(--secondary);
+        }
+        .recipe-result-name { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
+        .recipe-result-match { font-size: 0.7rem; color: var(--secondary); font-weight: 600; margin-bottom: 6px; }
+        .recipe-result-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
+        .recipe-result-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+        .recipe-result-tag {
+            background: #EDE9FE; color: var(--primary); border-radius: 20px;
+            padding: 2px 8px; font-size: 0.65rem; font-weight: 600;
+        }
+        .recipe-empty {
+            text-align: center; color: var(--text-muted); font-size: 0.85rem;
+            padding: 16px 0; line-height: 1.5;
+        }
+
         /* ====== RESPONSIVE ====== */
         @media (max-width: 480px) {
             main { padding: 12px; }
@@ -669,6 +702,27 @@
     <!--  TAB: ALIMENTAZIONE                                           -->
     <!-- ============================================================ -->
     <div class="tab" id="tab-alimentazione">
+
+        <!-- Svuotafrigo -->
+        <div class="card svuotafrigo-card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#EDE9FE;">🧊</div>
+                <div>
+                    <div class="card-title">Svuotafrigo</div>
+                    <div class="card-subtitle">Seleziona gli ingredienti che hai e trova ricette sane</div>
+                </div>
+            </div>
+            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:6px;">Clicca sui tag per selezionare gli ingredienti:</p>
+            <div class="ingredient-tags" id="ingredient-tags"></div>
+            <div class="custom-ing-row">
+                <input type="text" class="field-input" id="custom-ingredient" placeholder="Aggiungi ingrediente personalizzato...">
+                <button class="btn btn-secondary" onclick="addCustomIngredient()">+</button>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="findRecipes()">🔍 Trova Ricette</button>
+            <div class="recipe-results" id="recipe-results"></div>
+        </div>
+
+        <!-- Pasti del giorno -->
         <div id="meals-container"></div>
 
         <!-- Foto pasti -->
@@ -748,6 +802,113 @@ const HABITS = [
     { id: "h6", icon: "📖", label: "Letto almeno 10 minuti" },
     { id: "h7", icon: "🙏", label: "Praticato la gratitudine" },
 ];
+
+// =====================================================================
+//  SVUOTAFRIGO DATA
+// =====================================================================
+const INGREDIENTS = [
+    "uova", "pollo", "salmone", "tonno", "manzo", "tacchino", "gamberi",
+    "pasta", "riso", "quinoa", "farro", "pane", "patate", "patate dolci",
+    "pomodoro", "zucchine", "spinaci", "broccoli", "peperoni", "cipolla",
+    "carote", "sedano", "zucca", "funghi", "avocado", "limone",
+    "yogurt", "latte", "parmigiano", "mozzarella", "uova", "ceci", "lenticchie",
+    "basilico", "prezzemolo", "olio", "curcuma", "cannella", "uova"
+];
+
+const FRIGO_RECIPES = [
+    {
+        name: "Frittata di verdure leggera",
+        desc: "Sbattono le uova con spinaci, zucchine e cipolla. Cotto in padella con un filo d'olio. Perfetta per pranzo o cena.",
+        ingredients: ["uova", "spinaci", "zucchine", "cipolla", "olio"],
+        kcal: "320 kcal"
+    },
+    {
+        name: "Quinoa con pollo e verdure",
+        desc: "Quinoa lessata, petto di pollo a strisce, peperoni e zucchine saltate. Condita con limone e prezzemolo.",
+        ingredients: ["quinoa", "pollo", "peperoni", "zucchine", "limone", "prezzemolo"],
+        kcal: "480 kcal"
+    },
+    {
+        name: "Pasta integrale al pesto di zucchine",
+        desc: "Pasta integrale con pesto cremoso di zucchine, basilico e parmigiano. Leggera e nutriente.",
+        ingredients: ["pasta", "zucchine", "basilico", "parmigiano", "olio"],
+        kcal: "450 kcal"
+    },
+    {
+        name: "Salmone al forno con broccoli",
+        desc: "Salmone al forno con limone, accompagnato da broccoli al vapore e un filo di olio.",
+        ingredients: ["salmone", "broccoli", "limone", "olio"],
+        kcal: "420 kcal"
+    },
+    {
+        name: "Zuppa di lenticchie e verdure",
+        desc: "Zuppa calda e ricca di proteine con lenticchie, carote, sedano e cipolla. Ideale per la cena.",
+        ingredients: ["lenticchie", "carote", "sedano", "cipolla", "olio"],
+        kcal: "340 kcal"
+    },
+    {
+        name: "Riso basmati con gamberetti e zucchine",
+        desc: "Riso basmati saltato con gamberetti, zucchine, cipolla e un tocco di curcuma.",
+        ingredients: ["riso", "gamberi", "zucchine", "cipolla", "curcuma"],
+        kcal: "470 kcal"
+    },
+    {
+        name: "Insalata di farro estiva",
+        desc: "Farro freddo con pomodorini, mozzarella, basilico e un filo di olio. Fresco e completo.",
+        ingredients: ["farro", "pomodoro", "mozzarella", "basilico", "olio"],
+        kcal: "410 kcal"
+    },
+    {
+        name: "Patate dolci al forno con tacchino",
+        desc: "Patate dolci a cubetti al forno con petto di tacchino marinato e broccoli.",
+        ingredients: ["patate dolci", "tacchino", "broccoli", "olio"],
+        kcal: "440 kcal"
+    },
+    {
+        name: "Poke bowl con tonno e avocado",
+        desc: "Riso, tonno, avocado, cetriolo e edamame (o piselli) con salsa di soia leggera.",
+        ingredients: ["riso", "tonno", "avocado", "cipolla", "olio"],
+        kcal: "500 kcal"
+    },
+    {
+        name: "Yogurt greco con frutta e semi",
+        desc: "Yogurt greco con frutti di bosco, miele e semi di chia. Colazione o spuntino sano.",
+        ingredients: ["yogurt", "latte", "olio"],
+        kcal: "280 kcal"
+    },
+    {
+        name: "Frittata al forno con patate e funghi",
+        desc: "Uova, patate a fette sottili e funghi, cotte al forno. Piatto unico sostanzioso.",
+        ingredients: ["uova", "patate", "funghi", "olio"],
+        kcal: "390 kcal"
+    },
+    {
+        name: "Manzo saltato con verdure",
+        desc: "Strisce di manzo saltate in padella con peperoni, cipolla e carote. Servite con riso.",
+        ingredients: ["manzo", "peperoni", "cipolla", "carote", "riso", "olio"],
+        kcal: "520 kcal"
+    },
+    {
+        name: "Pasta e ceci cremosa",
+        desc: "Pasta con ceci, pomodoro, rosmarino e un filo d'olio. Ricca di fibre e proteine vegetali.",
+        ingredients: ["pasta", "ceci", "pomodoro", "olio"],
+        kcal: "430 kcal"
+    },
+    {
+        name: "Merluzzo al vapore con spinaci",
+        desc: "Filetto di merluzzo al vapore con limone, accompagnato da spinaci saltati.",
+        ingredients: ["limone", "spinaci", "olio"],
+        kcal: "320 kcal"
+    },
+    {
+        name: "Risotto alla zucca light",
+        desc: "Risotto cremoso alla zucca senza burro, con cipolla e parmigiano. Confort food leggero.",
+        ingredients: ["riso", "zucca", "cipolla", "parmigiano", "olio"],
+        kcal: "380 kcal"
+    }
+];
+
+let selectedIngredients = new Set();
 
 // =====================================================================
 //  MEALS PLANS  (indice = giorno della settimana JS: 0=Dom ... 6=Sab)
@@ -1257,6 +1418,7 @@ function init() {
     renderProfileForm();
     renderMeals();
     renderMealPhotos();
+    renderIngredientTags();
 }
 
 function renderQuote() {
@@ -1275,7 +1437,7 @@ function showTab(name) {
     document.getElementById('nav-' + name).classList.add('active');
     if (name === 'progressi') renderProgress();
     if (name === 'peso') { renderWeightSection(); }
-    if (name === 'alimentazione') { renderMeals(); renderMealPhotos(); }
+    if (name === 'alimentazione') { renderMeals(); renderMealPhotos(); renderIngredientTags(); }
 }
 
 // =====================================================================
@@ -1623,6 +1785,92 @@ function renderMealPhotos() {
             <div class="meal-photo-tag">${p.date}</div>
         </div>
     `).join('');
+}
+
+// =====================================================================
+//  SVUOTAFRIGO
+// =====================================================================
+function renderIngredientTags() {
+    const c = document.getElementById('ingredient-tags');
+    if (!c) return;
+    c.innerHTML = INGREDIENTS.map(ing => `
+        <span class="ing-tag ${selectedIngredients.has(ing) ? 'selected' : ''}" onclick="toggleIngredient('${ing}')">
+            ${ing}
+        </span>
+    `).join('');
+}
+
+function toggleIngredient(ing) {
+    if (selectedIngredients.has(ing)) selectedIngredients.delete(ing);
+    else selectedIngredients.add(ing);
+    renderIngredientTags();
+}
+
+function addCustomIngredient() {
+    const input = document.getElementById('custom-ingredient');
+    const val = input.value.trim().toLowerCase();
+    if (!val) return;
+    if (!INGREDIENTS.includes(val)) INGREDIENTS.push(val);
+    selectedIngredients.add(val);
+    input.value = '';
+    renderIngredientTags();
+    toast('✅ ' + val + ' aggiunto');
+}
+
+function findRecipes() {
+    const selected = Array.from(selectedIngredients);
+    if (selected.length === 0) {
+        toast('⚠️ Seleziona almeno un ingrediente');
+        return;
+    }
+
+    const scored = FRIGO_RECIPES.map(r => {
+        const matches = r.ingredients.filter(ing => selected.includes(ing)).length;
+        return { ...r, matches, matchPct: matches / r.ingredients.length };
+    }).filter(r => r.matches > 0);
+
+    scored.sort((a, b) => {
+        if (b.matches !== a.matches) return b.matches - a.matches;
+        return b.matchPct - a.matchPct;
+    });
+
+    const c = document.getElementById('recipe-results');
+    if (scored.length === 0) {
+        const query = encodeURIComponent('ricetta sana con ' + selected.join(' '));
+        c.innerHTML = `
+            <div class="recipe-empty">
+                <p>😅 Non ho trovato ricette con questi ingredienti.</p>
+                <p>Cerca su YouTube:</p>
+                <a href="https://www.youtube.com/results?search_query=${query}" target="_blank" class="recipe-video-link" style="justify-content:center;">
+                    ▶ Cerca ricetta su YouTube
+                </a>
+            </div>`;
+        return;
+    }
+
+    c.innerHTML = scored.map(r => {
+        const missing = r.ingredients.filter(ing => !selected.includes(ing));
+        const query = encodeURIComponent('ricetta ' + r.name + ' sana');
+        return `
+            <div class="recipe-result">
+                <div class="recipe-result-name">${r.name}</div>
+                <div class="recipe-result-match">🔥 ${r.kcal} · Match: ${r.matches}/${r.ingredients.length} ingredienti</div>
+                <div class="recipe-result-desc">${r.desc}</div>
+                <div class="recipe-result-tags">
+                    ${r.ingredients.map(ing => `<span class="recipe-result-tag ${selected.includes(ing) ? '' : 'missing'}">${selected.includes(ing) ? '✓' : '+'} ${ing}</span>`).join('')}
+                </div>
+                <a href="https://www.youtube.com/results?search_query=${query}" target="_blank" class="recipe-video-link">▶ Cerca video su YouTube</a>
+            </div>
+        `;
+    }).join('') + `
+        <div style="text-align:center;margin-top:10px;">
+            <a href="https://www.youtube.com/results?search_query=${encodeURIComponent('ricetta sana con ' + selected.join(' '))}" target="_blank" class="recipe-video-link" style="justify-content:center;">
+                🔍 Altre ricette su YouTube
+            </a>
+        </div>
+    `;
+
+    toast('🍳 ' + scored.length + ' ricetta/e trovata/e');
 }
 
 // =====================================================================
