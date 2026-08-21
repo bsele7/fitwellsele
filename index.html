@@ -37,7 +37,7 @@
 
         /* ====== HEADER ====== */
         header {
-            background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
+            background: linear-gradient(135deg, #6EE7B7 0%, #A7F3D0 100%);
             color: white;
             padding: 14px 20px;
             display: flex;
@@ -88,7 +88,11 @@
         .card-subtitle { font-size: 0.75rem; color: var(--text-muted); }
 
         /* ====== QUOTE CARD ====== */
-        .quote-card { background: linear-gradient(135deg, #7C3AED, #A78BFA); color: white; }
+        .quote-card { background: linear-gradient(135deg, #6EE7B7, #A7F3D0); color: #064E3B; }
+        .nature-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+        .nature-photo-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; box-shadow: var(--shadow); }
+        .nature-photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+        .nature-photo-item:hover img { transform: scale(1.06); }
         .quote-text { font-size: 0.98rem; font-style: italic; line-height: 1.65; margin-bottom: 8px; }
         .quote-author { font-size: 0.8rem; opacity: 0.8; text-align: right; }
 
@@ -280,6 +284,49 @@
         .ex-done-btn:hover { background: #DDD6FE; }
         .ex-done-btn.completed { background: var(--secondary); color: white; }
 
+        /* Timer esercizio */
+        .ex-timer-box { background: #F5F3FF; border-radius: 10px; padding: 10px 12px; margin: 10px 0; }
+        .ex-timer-display {
+            font-size: 1.9rem; font-weight: 700; color: var(--primary);
+            text-align: center; margin-bottom: 8px; letter-spacing: 1px;
+        }
+        .ex-timer-label { text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-top: -6px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ex-timer-btns { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+        .timer-btn {
+            background: white; border: 1.5px solid var(--primary-light); color: var(--primary);
+            border-radius: 8px; padding: 6px 12px; font-family: 'Poppins', sans-serif;
+            font-size: 0.76rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .timer-btn:hover { background: #EDE9FE; }
+        .timer-btn.rest { border-color: var(--secondary); color: var(--secondary); }
+        .timer-btn.rest:hover { background: #D1FAE5; }
+
+        /* Registro carichi/reps */
+        .ex-log-box { background: #F9FAFB; border-radius: 10px; padding: 10px 12px; margin: 10px 0; }
+        .ex-log-title { font-size: 0.78rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+        .ex-log-row { display: flex; gap: 6px; margin-bottom: 6px; }
+        .ex-log-row input {
+            flex: 1; padding: 8px 10px; border: 2px solid var(--border); border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.82rem; color: var(--text);
+        }
+        .ex-log-row input:focus { outline: none; border-color: var(--primary-light); }
+        .ex-log-row button { flex: 0 0 auto; }
+        .ex-log-history { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; line-height: 1.6; }
+        .ex-log-history b { color: var(--text); }
+
+        /* Variante facile */
+        .ex-variant-btn {
+            background: #FFF7ED; color: #92400E; border: none; border-radius: 8px;
+            padding: 6px 14px; font-family: 'Poppins', sans-serif; font-size: 0.76rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .ex-variant-btn:hover { background: #FEF3C7; }
+        .ex-variant-box {
+            display: none; background: #FFF7ED; border-radius: 8px; padding: 10px 12px;
+            margin-top: 8px; font-size: 0.8rem; color: #92400E; line-height: 1.55;
+        }
+        .ex-variant-box.open { display: block; }
+
         /* Workout complete banner */
         .workout-complete {
             background: linear-gradient(135deg, #059669, #10B981);
@@ -438,6 +485,35 @@
             padding: 16px 0; line-height: 1.5;
         }
 
+        /* ====== PROGRAMMI, GAMIFICATION & MODALITÀ GUIDATA ====== */
+        .workout-tools { display: grid; gap: 10px; margin-bottom: 14px; }
+        .tool-card { background: white; border-radius: 12px; padding: 14px; box-shadow: var(--shadow); }
+        .tool-title { font-size: 0.84rem; font-weight: 700; margin-bottom: 8px; }
+        .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .tool-select { width: 100%; padding: 9px 10px; border: 2px solid var(--border); border-radius: 9px; background: white; font-family: 'Poppins', sans-serif; font-size: 0.78rem; color: var(--text); }
+        .tool-select:focus { outline: none; border-color: var(--primary-light); }
+        .program-note { font-size: 0.74rem; color: var(--text-muted); line-height: 1.45; margin-top: 8px; }
+        .guided-panel { display: none; background: linear-gradient(135deg, #4C1D95, #7C3AED); color: white; border-radius: 14px; padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow-lg); }
+        .guided-panel.open { display: block; }
+        .guided-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+        .guided-kicker { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+        .guided-name { font-size: 1.08rem; font-weight: 700; margin-top: 3px; }
+        .guided-counter { font-size: 0.8rem; opacity: 0.9; white-space: nowrap; }
+        .guided-desc { font-size: 0.8rem; line-height: 1.5; opacity: 0.92; margin-bottom: 12px; }
+        .guided-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .guided-actions button { border: none; border-radius: 9px; padding: 8px 12px; font-family: 'Poppins', sans-serif; font-size: 0.76rem; font-weight: 600; cursor: pointer; }
+        .guided-next { background: white; color: #4C1D95; }
+        .guided-stop { background: rgba(255,255,255,0.18); color: white; }
+        .badge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .badge-card { background: #F9FAFB; border-radius: 10px; padding: 10px; border: 1px solid var(--border); opacity: 0.48; }
+        .badge-card.unlocked { opacity: 1; border-color: #FBBF24; background: #FFFBEB; }
+        .badge-icon { font-size: 1.3rem; float: left; margin-right: 7px; }
+        .badge-name { font-size: 0.76rem; font-weight: 700; }
+        .badge-desc { clear: both; font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; line-height: 1.35; }
+        .summary-card { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); border-radius: 12px; padding: 14px; margin-top: 12px; }
+        .summary-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 0.76rem; padding: 3px 0; }
+
         /* ====== RESPONSIVE ====== */
         @media (max-width: 480px) {
             main { padding: 12px; }
@@ -474,6 +550,22 @@
             <div style="font-size:0.7rem;opacity:0.8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">💭 Pensiero del Giorno</div>
             <div class="quote-text" id="quote-text"></div>
             <div class="quote-author" id="quote-author"></div>
+        </div>
+
+        <!-- Foto Natura Rilassanti -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#D1FAE5;">🏞️</div>
+                <div>
+                    <div class="card-title">Momento di Relax</div>
+                    <div class="card-subtitle">Immagini di natura per rilassare la mente</div>
+                </div>
+            </div>
+            <div class="nature-photos-grid">
+                <div class="nature-photo-item"><img src="https://cdn.abacus.ai/images/4ddc88f8-55a3-47db-889c-bccf3f24e843.png" alt="Lago in Canada"></div>
+                <div class="nature-photo-item"><img src="https://cdn.abacus.ai/images/dcefb882-89e3-453c-851d-40541282ef20.png" alt="Foresta di pini"></div>
+                <div class="nature-photo-item"><img src="https://cdn.abacus.ai/images/1da03d50-f898-4e43-b85b-11f875023474.png" alt="Foresta autunnale con lago"></div>
+            </div>
         </div>
 
         <!-- Acqua -->
@@ -569,6 +661,27 @@
     <!--  TAB: ALLENAMENTO                                             -->
     <!-- ============================================================ -->
     <div class="tab" id="tab-allenamento">
+        <div class="workout-tools">
+            <div class="tool-card">
+                <div class="tool-title">🎯 Personalizza il tuo percorso</div>
+                <div class="tool-grid">
+                    <select class="tool-select" id="program-select" onchange="setProgram(this.value)">
+                        <option value="wellness">Benessere generale</option>
+                        <option value="toning">Tonificazione</option>
+                        <option value="cardio">Resistenza e cardio</option>
+                        <option value="strength">Forza progressiva</option>
+                    </select>
+                    <select class="tool-select" id="level-select" onchange="setLevel(this.value)">
+                        <option value="beginner">Principiante</option>
+                        <option value="intermediate">Intermedio</option>
+                        <option value="advanced">Avanzato</option>
+                    </select>
+                </div>
+                <div class="program-note" id="program-note"></div>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="toggleGuidedMode()">▶ Inizia Allenamento Guidato</button>
+        </div>
+        <div class="guided-panel" id="guided-panel"></div>
         <div id="workout-container"></div>
     </div>
 
@@ -594,6 +707,11 @@
                 <div class="stat-value" id="st-habits">0%</div>
                 <div class="stat-label">Media Abitudini</div>
             </div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">🏅 Badge e traguardi</div>
+            <div class="badge-grid" id="badge-grid"></div>
+            <div class="summary-card" id="progress-summary"></div>
         </div>
         <div class="card">
             <div class="card-title" style="margin-bottom:14px;">📅 Storico Giornate</div>
@@ -909,6 +1027,24 @@ const FRIGO_RECIPES = [
 ];
 
 let selectedIngredients = new Set();
+
+// =====================================================================
+//  PROGRAMMI E MODALITÀ GUIDATA
+// =====================================================================
+const PROGRAMS = {
+    wellness: { name: 'Benessere generale', note: 'Equilibrio tra mobilità, forza, cardio e recupero.', adjustment: 'Mantieni il ritmo indicato e privilegia la tecnica.' },
+    toning: { name: 'Tonificazione', note: 'Più attenzione a controllo, core e lavoro muscolare.', adjustment: 'Esegui ogni movimento lentamente e con controllo.' },
+    cardio: { name: 'Resistenza e cardio', note: 'Focus su resistenza, ritmo e recuperi attivi.', adjustment: 'Mantieni un ritmo sostenibile; riduci l’impatto se serve.' },
+    strength: { name: 'Forza progressiva', note: 'Focus su esercizi di forza e progressione graduale.', adjustment: 'Aumenta il carico solo se la tecnica resta stabile.' }
+};
+const LEVELS = {
+    beginner: { name: 'Principiante', factor: 0.75, note: 'Riduci il volume e fai pause più lunghe.' },
+    intermediate: { name: 'Intermedio', factor: 1, note: 'Segui il programma come indicato.' },
+    advanced: { name: 'Avanzato', factor: 1.15, note: 'Aggiungi una ripetizione o riduci leggermente le pause, senza dolore.' }
+};
+let activeProgram = localStorage.getItem('zs-program') || 'wellness';
+let activeLevel = localStorage.getItem('zs-level') || 'beginner';
+let guidedState = { active: false, index: 0 };
 
 // =====================================================================
 //  MEALS PLANS  (indice = giorno della settimana JS: 0=Dom ... 6=Sab)
@@ -1400,6 +1536,75 @@ function saveMealPhotos(arr) {
 }
 
 // =====================================================================
+//  PROGRAMMI E ALLENAMENTO GUIDATO
+// =====================================================================
+function setProgram(value) {
+    if (!PROGRAMS[value]) return;
+    activeProgram = value;
+    localStorage.setItem('zs-program', value);
+    renderWorkout();
+    toast('🎯 Percorso: ' + PROGRAMS[value].name);
+}
+function setLevel(value) {
+    if (!LEVELS[value]) return;
+    activeLevel = value;
+    localStorage.setItem('zs-level', value);
+    renderWorkout();
+    toast('📈 Livello: ' + LEVELS[value].name);
+}
+function renderProgramControls() {
+    const p = document.getElementById('program-select');
+    const l = document.getElementById('level-select');
+    const n = document.getElementById('program-note');
+    if (p) p.value = activeProgram;
+    if (l) l.value = activeLevel;
+    if (n) n.textContent = PROGRAMS[activeProgram].note + ' ' + LEVELS[activeLevel].note;
+}
+function toggleGuidedMode() {
+    guidedState.active = !guidedState.active;
+    if (!guidedState.active) { guidedState.index = 0; stopAllExTimers(); }
+    renderGuidedPanel();
+}
+function stopAllExTimers() {
+    Object.values(exTimers).forEach(st => { if (st && st.interval) clearInterval(st.interval); if (st) st.running = false; });
+}
+function renderGuidedPanel() {
+    const panel = document.getElementById('guided-panel');
+    if (!panel) return;
+    if (!guidedState.active) { panel.classList.remove('open'); panel.innerHTML = ''; return; }
+    const plan = WORKOUTS[new Date().getDay()];
+    const ex = plan.exercises[guidedState.index];
+    panel.classList.add('open');
+    panel.innerHTML = `
+        <div class="guided-top">
+            <div><div class="guided-kicker">Allenamento guidato · ${PROGRAMS[activeProgram].name}</div><div class="guided-name">${ex.name}</div></div>
+            <div class="guided-counter">${guidedState.index + 1}/${plan.exercises.length}</div>
+        </div>
+        <div class="guided-desc">${ex.duration} · ${LEVELS[activeLevel].name}. ${PROGRAMS[activeProgram].adjustment} ${LEVELS[activeLevel].note}</div>
+        <div class="guided-actions">
+            <button class="guided-next" onclick="guidedNext()">${guidedState.index === plan.exercises.length - 1 ? '✓ Completa guida' : 'Avanti →'}</button>
+            <button class="guided-stop" onclick="toggleGuidedMode()">✕ Esci</button>
+        </div>`;
+}
+function guidedNext() {
+    const plan = WORKOUTS[new Date().getDay()];
+    const current = guidedState.index;
+    if (!S.workoutDone.includes(current)) S.workoutDone.push(current);
+    save();
+    if (current >= plan.exercises.length - 1) {
+        guidedState.active = false;
+        stopAllExTimers();
+        renderWorkout();
+        toast('🏆 Allenamento guidato completato!');
+        return;
+    }
+    guidedState.index++;
+    renderGuidedPanel();
+    renderWorkout();
+    document.getElementById('guided-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// =====================================================================
 //  INIT
 // =====================================================================
 function init() {
@@ -1415,6 +1620,8 @@ function init() {
     renderNotes();
     renderHabits();
     renderWorkout();
+    renderProgramControls();
+    renderGuidedPanel();
     renderProfileForm();
     renderMeals();
     renderMealPhotos();
@@ -1877,6 +2084,7 @@ function findRecipes() {
 //  WORKOUT
 // =====================================================================
 function renderWorkout() {
+    renderProgramControls();
     const dow = new Date().getDay();
     const plan = WORKOUTS[dow];
     const done = S.workoutDone.length;
@@ -1885,6 +2093,10 @@ function renderWorkout() {
 
     const exHTML = plan.exercises.map((ex, i) => {
         const isDone = S.workoutDone.includes(i);
+        const weighted = isWeightedExercise(ex);
+        const variantText = getVariantText(ex);
+        const log = loadExLog(dow, i);
+        const logHistory = log.slice(-3).reverse().map(l => `<div>📅 ${l.date}: <b>${l.weight} kg</b> × ${l.reps} rip</div>`).join('');
         return `
         <div class="exercise-item ${isDone ? 'done' : ''}" id="ex-${i}">
             <div class="exercise-header">
@@ -1900,12 +2112,39 @@ function renderWorkout() {
             <div class="accordion-content" id="ex-d-${i}">
                 <div class="exercise-desc">${ex.desc.replace(/\n/g, '<br>')}</div>
                 <div class="exercise-tip">${ex.tip}</div>
+
+                <!-- Timer -->
+                <div class="ex-timer-box">
+                    <div class="ex-timer-display" id="ex-timer-disp-${i}">${fmtTime(parseDurationSec(ex.duration))}</div>
+                    <div class="ex-timer-label" id="ex-timer-label-${i}">Timer esercizio</div>
+                    <div class="ex-timer-btns">
+                        <button class="timer-btn" onclick="startExTimer(${i})" id="ex-timer-start-${i}">▶ Avvia</button>
+                        <button class="timer-btn" onclick="pauseExTimer(${i})">⏸ Pausa</button>
+                        <button class="timer-btn" onclick="resetExTimer(${i})">↺ Reset</button>
+                        <button class="timer-btn rest" onclick="startRestTimer(${i}, ${restSecFor(ex)})">😴 Riposo ${restSecFor(ex)}s</button>
+                    </div>
+                </div>
+
+                ${weighted ? `
+                <!-- Registro carichi/reps -->
+                <div class="ex-log-box">
+                    <div class="ex-log-title">🏋️ Registra carico e ripetizioni</div>
+                    <div class="ex-log-row">
+                        <input type="number" step="0.5" placeholder="Peso (kg)" id="ex-log-w-${i}">
+                        <input type="number" placeholder="Reps" id="ex-log-r-${i}">
+                        <button class="btn btn-primary btn-sm" onclick="logExercisePerf(${i})">✓ Salva</button>
+                    </div>
+                    <div class="ex-log-history" id="ex-log-hist-${i}">${logHistory}</div>
+                </div>` : ''}
+
                 <div class="exercise-actions">
                     ${ex.yt ? `<a href="${ex.yt}" target="_blank" class="yt-link">▶ Video YouTube</a>` : ''}
+                    <button class="ex-variant-btn" onclick="toggleVariant(${i})">💡 Variante facile</button>
                     <button class="ex-done-btn ${isDone ? 'completed' : ''}" onclick="toggleDone(${i})">
                         ${isDone ? '✓ Completato' : '✓ Segna fatto'}
                     </button>
                 </div>
+                <div class="ex-variant-box" id="ex-variant-${i}">${variantText}</div>
             </div>
         </div>`;
     }).join('');
@@ -1923,8 +2162,10 @@ function renderWorkout() {
             <div class="workout-day">${plan.day.toUpperCase()}</div>
             <div class="workout-title">${plan.theme}</div>
             <div class="workout-desc">${plan.description}</div>
+            <div class="workout-desc" style="margin-top:-5px;"><b>${PROGRAMS[activeProgram].name}</b> · ${PROGRAMS[activeProgram].adjustment}</div>
             <div class="workout-meta">
                 <span class="workout-badge">⏱ ${plan.totalMin} min</span>
+                <span class="workout-badge">📈 ${LEVELS[activeLevel].name}</span>
                 ${plan.equipment.map(e => `<span class="workout-badge">🔧 ${e}</span>`).join('')}
             </div>
         </div>
@@ -1941,9 +2182,12 @@ function renderWorkout() {
 }
 function toggleDetail(i) {
     const d = document.getElementById('ex-d-' + i);
+    const wasOpen = d.classList.contains('open');
     d.classList.toggle('open');
+    if (wasOpen && exTimers[i]) { clearInterval(exTimers[i].interval); exTimers[i].running = false; }
 }
 function toggleDone(i) {
+    if (exTimers[i]) { clearInterval(exTimers[i].interval); exTimers[i].running = false; }
     if (S.workoutDone.includes(i)) {
         S.workoutDone = S.workoutDone.filter(x => x !== i);
         toast('↩️ Esercizio rimosso');
@@ -1953,6 +2197,152 @@ function toggleDone(i) {
         toast('💪 ' + plan.exercises[i].name + ' completato!');
     }
     save(); renderWorkout();
+}
+
+// =====================================================================
+//  WORKOUT TIMER
+// =====================================================================
+let exTimers = {}; // { [i]: { remaining, running, interval, mode: 'work'|'rest' } }
+
+function parseDurationSec(durStr) {
+    const m = durStr.match(/(\d+)/);
+    return m ? parseInt(m[1]) * 60 : 300;
+}
+function restSecFor(ex) {
+    const m = ex.desc.match(/(\d+)\s*sec[^.]*ripos/i) || ex.desc.match(/ripos[^.]*?(\d+)\s*sec/i);
+    return m ? parseInt(m[1]) : 45;
+}
+function fmtTime(sec) {
+    sec = Math.max(0, Math.round(sec));
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+function beep() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.value = 0.2;
+        osc.start();
+        osc.stop(ctx.currentTime + 0.18);
+    } catch(e) {}
+}
+function getExTimerState(i, ex) {
+    if (!exTimers[i]) {
+        exTimers[i] = { remaining: parseDurationSec(ex.duration), running: false, interval: null, mode: 'work' };
+    }
+    return exTimers[i];
+}
+function tickExTimer(i) {
+    const st = exTimers[i];
+    if (!st) return;
+    st.remaining--;
+    const disp = document.getElementById('ex-timer-disp-' + i);
+    if (disp) disp.textContent = fmtTime(st.remaining);
+    if (st.remaining <= 3 && st.remaining > 0) beep();
+    if (st.remaining <= 0) {
+        beep();
+        clearInterval(st.interval);
+        st.running = false;
+        const startBtn = document.getElementById('ex-timer-start-' + i);
+        if (startBtn) startBtn.textContent = '▶ Avvia';
+        toast(st.mode === 'rest' ? '⏰ Riposo terminato!' : '⏰ Tempo esercizio terminato!');
+        st.mode = 'work';
+    }
+}
+function startExTimer(i) {
+    const dow = new Date().getDay();
+    const ex = WORKOUTS[dow].exercises[i];
+    const st = getExTimerState(i, ex);
+    if (st.running) return;
+    if (st.remaining <= 0) st.remaining = parseDurationSec(ex.duration);
+    st.running = true;
+    st.mode = 'work';
+    const lbl = document.getElementById('ex-timer-label-' + i);
+    if (lbl) lbl.textContent = 'Timer esercizio';
+    const startBtn = document.getElementById('ex-timer-start-' + i);
+    if (startBtn) startBtn.textContent = '⏸ In corso...';
+    clearInterval(st.interval);
+    st.interval = setInterval(() => tickExTimer(i), 1000);
+}
+function pauseExTimer(i) {
+    const st = exTimers[i];
+    if (!st) return;
+    st.running = false;
+    clearInterval(st.interval);
+    const startBtn = document.getElementById('ex-timer-start-' + i);
+    if (startBtn) startBtn.textContent = '▶ Riprendi';
+}
+function resetExTimer(i) {
+    const dow = new Date().getDay();
+    const ex = WORKOUTS[dow].exercises[i];
+    if (exTimers[i]) clearInterval(exTimers[i].interval);
+    exTimers[i] = { remaining: parseDurationSec(ex.duration), running: false, interval: null, mode: 'work' };
+    const disp = document.getElementById('ex-timer-disp-' + i);
+    if (disp) disp.textContent = fmtTime(exTimers[i].remaining);
+    const lbl = document.getElementById('ex-timer-label-' + i);
+    if (lbl) lbl.textContent = 'Timer esercizio';
+    const startBtn = document.getElementById('ex-timer-start-' + i);
+    if (startBtn) startBtn.textContent = '▶ Avvia';
+}
+function startRestTimer(i, restSec) {
+    if (exTimers[i]) clearInterval(exTimers[i].interval);
+    const st = { remaining: restSec, running: true, interval: null, mode: 'rest' };
+    exTimers[i] = st;
+    const lbl = document.getElementById('ex-timer-label-' + i);
+    if (lbl) lbl.textContent = '😴 Riposo';
+    const disp = document.getElementById('ex-timer-disp-' + i);
+    if (disp) disp.textContent = fmtTime(st.remaining);
+    const startBtn = document.getElementById('ex-timer-start-' + i);
+    if (startBtn) startBtn.textContent = '⏸ In corso...';
+    st.interval = setInterval(() => tickExTimer(i), 1000);
+}
+
+// =====================================================================
+//  REGISTRO CARICHI / RIPETIZIONI
+// =====================================================================
+function isWeightedExercise(ex) {
+    return /manubri|manubrio|fascia/i.test(ex.name + ' ' + ex.desc);
+}
+function loadExLog(dow, i) {
+    const raw = localStorage.getItem(`zs-exlog-${dow}-${i}`);
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch(e) { return []; }
+}
+function saveExLog(dow, i, arr) {
+    localStorage.setItem(`zs-exlog-${dow}-${i}`, JSON.stringify(arr));
+}
+function logExercisePerf(i) {
+    const dow = new Date().getDay();
+    const w = parseFloat(document.getElementById('ex-log-w-' + i).value);
+    const r = parseInt(document.getElementById('ex-log-r-' + i).value);
+    if (!w || !r) { toast('⚠️ Inserisci peso e ripetizioni'); return; }
+    let log = loadExLog(dow, i);
+    const now = new Date();
+    log.push({ date: now.toLocaleDateString('it-IT', { day:'numeric', month:'short' }), weight: w, reps: r });
+    saveExLog(dow, i, log);
+    document.getElementById('ex-log-w-' + i).value = '';
+    document.getElementById('ex-log-r-' + i).value = '';
+    const histEl = document.getElementById('ex-log-hist-' + i);
+    if (histEl) {
+        histEl.innerHTML = log.slice(-3).reverse().map(l => `<div>📅 ${l.date}: <b>${l.weight} kg</b> × ${l.reps} rip</div>`).join('');
+    }
+    toast('✅ Performance registrata!');
+}
+
+// =====================================================================
+//  VARIANTE FACILE
+// =====================================================================
+function getVariantText(ex) {
+    if (ex.variant) return ex.variant;
+    return `💡 Troppo intenso? Riduci ripetizioni/tempo del 30-40%, allunga le pause di riposo, oppure esegui il movimento più lentamente e senza salti/impatti mantenendo la tecnica corretta. L'importante è muoversi senza dolore.`;
+}
+function toggleVariant(i) {
+    const box = document.getElementById('ex-variant-' + i);
+    if (box) box.classList.toggle('open');
 }
 
 // =====================================================================
