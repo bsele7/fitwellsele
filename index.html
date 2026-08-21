@@ -1,318 +1,1319 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZenSpace - App Benessere Completa</title>
-  <!-- Tailwind CSS per uno stile moderno e reattivo -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Icone Lucide -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    @keyframes pulseBreath {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.4); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.8; }
-    }
-    .breathing-active {
-      animation: pulseBreath 12s infinite ease-in-out;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenSpace – Il tuo benessere quotidiano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #7C3AED;
+            --primary-light: #A78BFA;
+            --secondary: #059669;
+            --secondary-light: #34D399;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --bg: #F5F3FF;
+            --bg2: #FFFFFF;
+            --text: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* ====== HEADER ====== */
+        header {
+            background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+        }
+        .logo { font-size: 1.3rem; font-weight: 700; }
+        .header-date { font-size: 0.75rem; opacity: 0.85; text-align: right; line-height: 1.4; }
+
+        /* ====== BOTTOM NAV ====== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; border-top: 1px solid var(--border);
+            display: flex; z-index: 100;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .nav-btn {
+            flex: 1; padding: 10px 8px 8px; border: none; background: none;
+            cursor: pointer; display: flex; flex-direction: column;
+            align-items: center; gap: 3px;
+            font-family: 'Poppins', sans-serif; font-size: 0.68rem;
+            color: var(--text-muted); transition: all 0.2s;
+        }
+        .nav-btn.active { color: var(--primary); }
+        .nav-btn .ni { font-size: 1.4rem; }
+
+        /* ====== MAIN ====== */
+        main { max-width: 600px; margin: 0 auto; padding: 16px; }
+        .tab { display: none; }
+        .tab.active { display: block; }
+
+        /* ====== CARD ====== */
+        .card {
+            background: var(--bg2); border-radius: var(--radius);
+            padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow);
+        }
+        .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .card-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; flex-shrink: 0;
+        }
+        .card-title { font-size: 1rem; font-weight: 600; }
+        .card-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* ====== QUOTE CARD ====== */
+        .quote-card { background: linear-gradient(135deg, #7C3AED, #A78BFA); color: white; }
+        .quote-text { font-size: 0.98rem; font-style: italic; line-height: 1.65; margin-bottom: 8px; }
+        .quote-author { font-size: 0.8rem; opacity: 0.8; text-align: right; }
+
+        /* ====== WATER ====== */
+        .water-glasses { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+        .glass {
+            width: 38px; height: 50px; border-radius: 6px;
+            border: 2.5px solid #93C5FD; background: #EFF6FF;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: flex-end; overflow: hidden; padding: 2px;
+            position: relative;
+        }
+        .glass.filled { background: #3B82F6; border-color: #1D4ED8; }
+        .glass .fill { width: 100%; background: #93C5FD; border-radius: 3px; height: 0%; transition: height 0.3s; }
+        .glass.filled .fill { height: 100%; }
+        .glass:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(59,130,246,0.3); }
+        .water-info { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .water-count { font-size: 1.2rem; font-weight: 700; color: #3B82F6; }
+        .water-btns { display: flex; gap: 8px; margin-top: 12px; }
+        .water-btn {
+            flex: 1; padding: 10px; background: #3B82F6; color: white;
+            border: none; border-radius: 10px; font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .water-btn:hover { background: #2563EB; transform: translateY(-1px); }
+        .water-btn.rem { background: #EFF6FF; color: #3B82F6; flex: 0 0 auto; padding: 10px 16px; }
+        .water-btn.rem:hover { background: #DBEAFE; }
+        .water-progress-bar { background: #DBEAFE; border-radius: 10px; height: 6px; margin-top: 10px; overflow: hidden; }
+        .water-progress-fill { height: 100%; background: #3B82F6; border-radius: 10px; transition: width 0.4s; }
+
+        /* ====== BREATHING ====== */
+        .breathing-container { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 8px 0; }
+        .breath-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #A78BFA);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.82rem; font-weight: 600; text-align: center;
+            transition: transform 1s ease;
+            box-shadow: 0 0 0 12px rgba(124,58,237,0.1), 0 0 0 24px rgba(124,58,237,0.05);
+        }
+        .breath-circle.inhale { animation: breatheIn 4s ease forwards; }
+        .breath-circle.hold { transform: scale(1.28); }
+        .breath-circle.exhale { animation: breatheOut 4s ease forwards; }
+        @keyframes breatheIn { from { transform: scale(1); } to { transform: scale(1.28); } }
+        @keyframes breatheOut { from { transform: scale(1.28); } to { transform: scale(1); } }
+        .breath-phase { font-size: 1rem; font-weight: 600; color: var(--primary); }
+        .breath-counter { font-size: 2.2rem; font-weight: 700; color: var(--primary); line-height: 1; }
+        .breath-rounds { font-size: 0.82rem; color: var(--text-muted); }
+        .breath-btns { display: flex; gap: 8px; }
+
+        /* ====== BUTTONS ====== */
+        .btn {
+            border: none; border-radius: 10px; padding: 10px 20px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #6D28D9; transform: translateY(-1px); }
+        .btn-secondary { background: #F3F4F6; color: var(--text); }
+        .btn-secondary:hover { background: #E5E7EB; }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-success:hover { background: #047857; }
+        .btn-danger { background: #FEE2E2; color: var(--danger); }
+        .btn-sm { padding: 6px 14px; font-size: 0.78rem; }
+        .btn-full { width: 100%; }
+
+        /* ====== MOOD ====== */
+        .mood-grid { display: flex; justify-content: space-around; margin: 10px 0; }
+        .mood-btn {
+            background: none; border: 2.5px solid var(--border); border-radius: 50%;
+            width: 54px; height: 54px; font-size: 1.5rem; cursor: pointer; transition: all 0.2s;
+        }
+        .mood-btn.selected { border-color: var(--primary); background: #F5F3FF; transform: scale(1.18); }
+        .mood-btn:hover { transform: scale(1.1); }
+        .mood-labels { display: flex; justify-content: space-around; margin-top: 4px; }
+        .mood-label { font-size: 0.62rem; color: var(--text-muted); width: 54px; text-align: center; }
+
+        /* ====== NOTES ====== */
+        .note-input {
+            width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem; resize: vertical;
+            min-height: 80px; color: var(--text); transition: border-color 0.2s; margin-bottom: 10px;
+        }
+        .note-input:focus { outline: none; border-color: var(--primary-light); }
+        .note-item {
+            background: #F9FAFB; border-radius: 10px; padding: 12px; margin-bottom: 8px;
+            border-left: 3px solid var(--primary-light); display: flex; gap: 10px; align-items: flex-start;
+        }
+        .note-content { flex: 1; }
+        .note-meta { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; }
+        .note-text { font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; }
+        .note-del { background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--text-muted); padding: 2px; }
+        .note-del:hover { color: var(--danger); }
+
+        /* ====== HABITS ====== */
+        .habit-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 0; border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .habit-item:last-child { border-bottom: none; }
+        .habit-item:hover { background: #FAFAFA; border-radius: 8px; }
+        .habit-check {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 2.5px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: all 0.2s; font-size: 0.85rem; color: white;
+        }
+        .habit-check.done { background: var(--secondary); border-color: var(--secondary); }
+        .habit-label { flex: 1; font-size: 0.88rem; }
+        .habit-label.done { text-decoration: line-through; color: var(--text-muted); }
+        .habit-icon { font-size: 1.15rem; }
+        .habits-progress-bar { background: #D1FAE5; border-radius: 10px; height: 7px; margin-top: 12px; overflow: hidden; }
+        .habits-progress-fill { height: 100%; background: var(--secondary); border-radius: 10px; transition: width 0.4s; }
+
+        /* ====== SAVE DAY ====== */
+        .save-day-btn {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, #7C3AED, #A78BFA);
+            color: white; border: none; border-radius: 12px;
+            font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600;
+            cursor: pointer; margin-top: 4px; transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(124,58,237,0.3);
+        }
+        .save-day-btn:hover { opacity: 0.92; transform: translateY(-2px); }
+
+        /* ====== WORKOUT ====== */
+        .workout-hero {
+            background: linear-gradient(135deg, #059669, #10B981);
+            color: white; border-radius: var(--radius); padding: 20px; margin-bottom: 14px;
+        }
+        .workout-day { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.2px; opacity: 0.85; margin-bottom: 4px; }
+        .workout-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; }
+        .workout-desc { font-size: 0.83rem; opacity: 0.9; line-height: 1.5; margin-bottom: 12px; }
+        .workout-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+        .workout-badge {
+            background: rgba(255,255,255,0.2); border-radius: 20px;
+            padding: 4px 12px; font-size: 0.76rem; font-weight: 500;
+        }
+        .workout-prog-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
+        .workout-prog-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .workout-prog-label { font-weight: 600; font-size: 0.88rem; }
+        .workout-prog-pct { font-size: 0.88rem; color: var(--secondary); font-weight: 600; }
+        .prog-bar { background: #E5E7EB; border-radius: 10px; height: 8px; overflow: hidden; }
+        .prog-fill { height: 100%; background: var(--secondary); border-radius: 10px; transition: width 0.5s ease; }
+
+        /* Exercise items */
+        .exercise-item {
+            background: white; border-radius: 12px; padding: 16px;
+            margin-bottom: 10px; box-shadow: var(--shadow); transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .exercise-item.done { border-left-color: var(--secondary); opacity: 0.75; }
+        .exercise-header { display: flex; align-items: flex-start; gap: 10px; }
+        .exercise-num {
+            width: 30px; height: 30px; border-radius: 50%; background: #F3F4F6;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700; color: var(--primary); flex-shrink: 0;
+        }
+        .exercise-num.done { background: var(--secondary); color: white; }
+        .exercise-info { flex: 1; }
+        .exercise-name { font-size: 0.93rem; font-weight: 600; margin-bottom: 2px; }
+        .exercise-duration { font-size: 0.76rem; color: var(--primary); font-weight: 600; }
+        .exercise-toggle-icon { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 4px 2px; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .accordion-content.open { max-height: 900px; }
+        .exercise-desc {
+            font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;
+            margin: 10px 0 6px; padding-top: 10px; border-top: 1px solid var(--border);
+        }
+        .exercise-tip {
+            background: #FFF7ED; border-radius: 8px; padding: 8px 12px;
+            font-size: 0.78rem; color: #92400E; margin: 6px 0; line-height: 1.5;
+        }
+        .exercise-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .yt-link {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #FEE2E2; color: #DC2626; border-radius: 8px;
+            padding: 6px 12px; font-size: 0.76rem; font-weight: 600;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .yt-link:hover { background: #FECACA; }
+        .ex-done-btn {
+            background: #EDE9FE; color: var(--primary); border: none;
+            border-radius: 8px; padding: 6px 14px;
+            font-family: 'Poppins', sans-serif; font-size: 0.76rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .ex-done-btn:hover { background: #DDD6FE; }
+        .ex-done-btn.completed { background: var(--secondary); color: white; }
+
+        /* Workout complete banner */
+        .workout-complete {
+            background: linear-gradient(135deg, #059669, #10B981);
+            color: white; border-radius: 14px; padding: 24px;
+            text-align: center; margin-top: 14px; box-shadow: var(--shadow-lg);
+        }
+        .workout-complete .wc-icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .workout-complete h3 { font-size: 1.2rem; margin-bottom: 6px; }
+        .workout-complete p { font-size: 0.85rem; opacity: 0.9; margin-bottom: 14px; }
+        .wc-btn {
+            background: white; color: #059669; border: none; border-radius: 10px;
+            padding: 10px 24px; font-family: 'Poppins', sans-serif;
+            font-weight: 700; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;
+        }
+        .wc-btn:hover { background: #ECFDF5; }
+
+        /* ====== PROGRESS ====== */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .stat-card {
+            background: white; border-radius: 14px; padding: 16px;
+            text-align: center; box-shadow: var(--shadow);
+        }
+        .stat-value { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+        .stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; line-height: 1.3; }
+        .history-item {
+            background: white; border-radius: 12px; padding: 16px;
+            margin-bottom: 10px; box-shadow: var(--shadow);
+        }
+        .history-date { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+        .history-workout-name { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 10px; }
+        .history-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+        .hbadge {
+            border-radius: 20px; padding: 3px 10px; font-size: 0.73rem; font-weight: 600;
+        }
+        .hbadge.w { background: #DBEAFE; color: #1D4ED8; }
+        .hbadge.m { background: #EDE9FE; color: #4C1D95; }
+        .hbadge.wk { background: #D1FAE5; color: #065F46; }
+        .hbadge.h { background: #FEF3C7; color: #92400E; }
+
+        /* ====== TOAST ====== */
+        .toast {
+            position: fixed; bottom: 88px; left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            background: #1F2937; color: white; border-radius: 10px;
+            padding: 10px 20px; font-size: 0.84rem; font-weight: 500;
+            opacity: 0; transition: all 0.3s; z-index: 300; white-space: nowrap;
+            max-width: 90vw; text-align: center;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 480px) {
+            main { padding: 12px; }
+            .card { padding: 16px; }
+            .workout-title { font-size: 1.15rem; }
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen pb-12">
+<body>
 
-  <!-- Intestazione -->
-  <header class="bg-emerald-600 text-white shadow-md sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <i data-lucide="sparkles" class="w-6 h-6"></i>
-        <h1 class="text-xl font-bold tracking-wide">ZenSpace</h1>
-      </div>
-      <div id="today-date" class="text-sm font-medium text-emerald-100"></div>
-    </div>
-  </header>
+<!-- Header -->
+<header>
+    <div class="logo">🌿 ZenSpace</div>
+    <div class="header-date" id="header-date"></div>
+</header>
 
-  <!-- Contenitore Principale -->
-  <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
-    <!-- Sezione Citazione Ispirazionale -->
-    <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between">
-      <div>
-        <p class="text-xs uppercase tracking-widest text-emerald-200 font-semibold mb-1">Pensiero del giorno</p>
-        <p id="quote-text" class="text-lg italic font-light">"Prenditi cura del tuo corpo, è l'unico posto in cui devi vivere."</p>
-      </div>
-      <i data-lucide="heart-handshake" class="w-12 h-12 opacity-80 hidden sm:block"></i>
-    </div>
+<!-- Main content -->
+<main>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- ============================================================ -->
+    <!--  TAB: OGGI                                                    -->
+    <!-- ============================================================ -->
+    <div class="tab active" id="tab-oggi">
 
-      <!-- Modulo 1: Idratazione -->
-      <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center space-x-2">
-              <i data-lucide="droplet" class="w-5 h-5 text-sky-500"></i>
-              <h2 class="text-lg font-bold text-slate-700">Idratazione Giornaliera</h2>
+        <!-- Quote -->
+        <div class="card quote-card">
+            <div style="font-size:0.7rem;opacity:0.8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">💭 Pensiero del Giorno</div>
+            <div class="quote-text" id="quote-text"></div>
+            <div class="quote-author" id="quote-author"></div>
+        </div>
+
+        <!-- Acqua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#DBEAFE;">💧</div>
+                <div>
+                    <div class="card-title">Idratazione Giornaliera</div>
+                    <div class="card-subtitle">Obiettivo: 8 bicchieri · 2 litri</div>
+                </div>
             </div>
-            <span id="water-count" class="text-sm font-semibold text-sky-600 bg-sky-50 px-2.5 py-1 rounded-full">0 / 8 Bicchieri</span>
-          </div>
-
-          <p class="text-sm text-slate-500 mb-4">Mantieni il corpo idratato bevendo almeno 2 litri d'acqua al giorno.</p>
-
-          <!-- Barra di avanzamento -->
-          <div class="w-full bg-slate-100 rounded-full h-3 mb-6 overflow-hidden">
-            <div id="water-progress" class="bg-sky-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
-          </div>
+            <div class="water-glasses" id="water-glasses"></div>
+            <div class="water-info">
+                <div>
+                    <span class="water-count" id="water-count">0</span>
+                    <span style="font-size:0.85rem;color:#6B7280;"> / 8 bicchieri</span>
+                </div>
+                <span id="water-ml" style="font-size:0.82rem;color:#3B82F6;font-weight:600;"></span>
+            </div>
+            <div class="water-progress-bar" style="margin-top:8px;">
+                <div class="water-progress-fill" id="water-prog" style="width:0%;"></div>
+            </div>
+            <div class="water-btns">
+                <button class="water-btn" onclick="addWater()">+ Aggiungi Bicchiere</button>
+                <button class="water-btn rem" onclick="removeWater()">−</button>
+            </div>
         </div>
 
-        <div class="flex space-x-3">
-          <button onclick="changeWater(1)" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 rounded-xl transition flex items-center justify-center space-x-1">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            <span>Bicchiere (+250ml)</span>
-          </button>
-          <button onclick="changeWater(-1)" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl transition">
-            <i data-lucide="minus" class="w-4 h-4"></i>
-          </button>
-          <button onclick="resetWater()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl transition" title="Resetta">
-            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </section>
-
-      <!-- Modulo 2: Respirazione & Rilassamento -->
-      <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center text-center justify-between">
-        <div class="w-full">
-          <div class="flex items-center space-x-2 mb-4 justify-start">
-            <i data-lucide="wind" class="w-5 h-5 text-teal-500"></i>
-            <h2 class="text-lg font-bold text-slate-700">Pausa Respiro (Box Breathing)</h2>
-          </div>
-          <p class="text-sm text-slate-500 mb-6">Segui il ritmo per calmare la mente e ridurre i livelli di stress.</p>
-        </div>
-
-        <!-- Cerchio di respirazione -->
-        <div class="my-4 relative flex items-center justify-center">
-          <div id="breath-circle" class="w-32 h-32 rounded-full bg-teal-100 border-4 border-teal-400 flex items-center justify-center shadow-inner transition-transform duration-1000">
-            <span id="breath-text" class="text-sm font-bold text-teal-700">Pronto?</span>
-          </div>
+        <!-- Box Breathing -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#EDE9FE;">🌬️</div>
+                <div>
+                    <div class="card-title">Pausa Respiro</div>
+                    <div class="card-subtitle">Box Breathing · 4-4-4-4 secondi</div>
+                </div>
+            </div>
+            <div class="breathing-container">
+                <div class="breath-circle" id="breath-circle">
+                    <span id="breath-inner">Pronto?</span>
+                </div>
+                <div class="breath-phase" id="breath-phase">Clicca Start per iniziare</div>
+                <div class="breath-counter" id="breath-counter" style="display:none;"></div>
+                <div class="breath-rounds" id="breath-rounds" style="display:none;"></div>
+                <div class="breath-btns">
+                    <button class="btn btn-primary" id="breath-btn" onclick="toggleBreathing()">▶ Inizia</button>
+                    <button class="btn btn-secondary" onclick="resetBreathing()">↺ Reset</button>
+                </div>
+            </div>
         </div>
 
-        <button id="breath-btn" onclick="toggleBreathing()" class="w-full mt-4 bg-teal-500 hover:bg-teal-600 text-white font-medium py-2 rounded-xl transition flex items-center justify-center space-x-2">
-          <i data-lucide="play" class="w-4 h-4"></i>
-          <span id="breath-btn-label">Inizia Sessione</span>
-        </button>
-      </section>
-
-      <!-- Modulo 3: Diario dell'Umore & Gratitudine -->
-      <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div class="flex items-center space-x-2 mb-4">
-          <i data-lucide="smile" class="w-5 h-5 text-amber-500"></i>
-          <h2 class="text-lg font-bold text-slate-700">Umore & Diario</h2>
+        <!-- Umore & Diario -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#FCE7F3;">📔</div>
+                <div>
+                    <div class="card-title">Umore &amp; Diario</div>
+                    <div class="card-subtitle">Clicca sull'emoji e scrivi i tuoi pensieri</div>
+                </div>
+            </div>
+            <div class="mood-grid" id="mood-grid"></div>
+            <div class="mood-labels" id="mood-labels"></div>
+            <div style="margin:12px 0 0;">
+                <textarea class="note-input" id="note-input" placeholder="Scrivi i tuoi pensieri di oggi..."></textarea>
+                <button class="btn btn-primary btn-full" onclick="saveNote()">📝 Salva Nota</button>
+            </div>
+            <div id="notes-list" style="margin-top:14px;"></div>
         </div>
 
-        <p class="text-sm text-slate-500 mb-4">Come ti senti adesso? Scegli il tuo stato d'animo:</p>
-        
-        <!-- Selezione Umore -->
-        <div class="flex justify-between mb-4">
-          <button onclick="selectMood('Radioso 🌟')" class="mood-btn p-2 rounded-xl border border-slate-200 hover:bg-amber-50 hover:border-amber-400 transition text-2xl" title="Radioso">🌟</button>
-          <button onclick="selectMood('Felice 😊')" class="mood-btn p-2 rounded-xl border border-slate-200 hover:bg-amber-50 hover:border-amber-400 transition text-2xl" title="Felice">😊</button>
-          <button onclick="selectMood('Calmo 😌')" class="mood-btn p-2 rounded-xl border border-slate-200 hover:bg-amber-50 hover:border-amber-400 transition text-2xl" title="Calmo">😌</button>
-          <button onclick="selectMood('Stanco 😴')" class="mood-btn p-2 rounded-xl border border-slate-200 hover:bg-amber-50 hover:border-amber-400 transition text-2xl" title="Stanco">😴</button>
-          <button onclick="selectMood('Stressato 😣')" class="mood-btn p-2 rounded-xl border border-slate-200 hover:bg-amber-50 hover:border-amber-400 transition text-2xl" title="Stressato">😣</button>
+        <!-- Abitudini -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#D1FAE5;">✅</div>
+                <div>
+                    <div class="card-title">Abitudini Quotidiane</div>
+                    <div class="card-subtitle">Clicca per spuntare ogni abitudine</div>
+                </div>
+            </div>
+            <div id="habits-list"></div>
+            <div class="habits-progress-bar">
+                <div class="habits-progress-fill" id="habits-prog" style="width:0%;"></div>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;" id="habits-count">0/7 abitudini completate</div>
         </div>
 
-        <div class="space-y-3">
-          <textarea id="journal-input" rows="2" placeholder="Scrivi un pensiero di gratitudine o un appunto della giornata..." class="w-full p-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"></textarea>
-          <button onclick="saveJournalEntry()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 rounded-xl transition flex items-center justify-center space-x-1">
-            <i data-lucide="save" class="w-4 h-4"></i>
-            <span>Salva Nota</span>
-          </button>
-        </div>
+        <!-- Save day -->
+        <button class="save-day-btn" onclick="saveDay()">💾 Salva Giornata nei Progressi</button>
 
-        <!-- Elenco note recenti -->
-        <div class="mt-6">
-          <h3 class="text-xs uppercase font-bold text-slate-400 tracking-wider mb-2">Ultime Note</h3>
-          <div id="journal-list" class="space-y-2 max-h-36 overflow-y-auto pr-1"></div>
-        </div>
-      </section>
+    </div><!-- end tab-oggi -->
 
-      <!-- Modulo 4: Checklist Abitudini Quotidiane -->
-      <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center space-x-2 mb-4">
-            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
-            <h2 class="text-lg font-bold text-slate-700">Abitudini di Benessere</h2>
-          </div>
-          <p class="text-sm text-slate-500 mb-4">Piccole azioni quotidiane per il tuo equilibrio fisico e mentale.</p>
 
-          <div id="habits-list" class="space-y-2 mb-4"></div>
-        </div>
-
-        <!-- Aggiungi nuova abitudine -->
-        <div class="flex space-x-2 pt-2 border-t border-slate-100">
-          <input id="new-habit-input" type="text" placeholder="Aggiungi abitudine..." class="flex-1 px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400">
-          <button onclick="addHabit()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl transition">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </section>
-
+    <!-- ============================================================ -->
+    <!--  TAB: ALLENAMENTO                                             -->
+    <!-- ============================================================ -->
+    <div class="tab" id="tab-allenamento">
+        <div id="workout-container"></div>
     </div>
-  </main>
 
-  <script>
-    // --- Data e Inizializzazione ---
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('today-date').innerText = new Date().toLocaleDateString('it-IT', options);
-      loadWater();
-      loadJournal();
-      loadHabits();
-    });
 
-    // --- Gestione Idratazione ---
-    let waterCount = 0;
-    const maxWater = 8;
-
-    function loadWater() {
-      const saved = localStorage.getItem('zen_water');
-      waterCount = saved ? parseInt(saved) : 0;
-      updateWaterUI();
-    }
-
-    function changeWater(delta) {
-      waterCount = Math.max(0, Math.min(16, waterCount + delta));
-      localStorage.setItem('zen_water', waterCount);
-      updateWaterUI();
-    }
-
-    function resetWater() {
-      waterCount = 0;
-      localStorage.setItem('zen_water', 0);
-      updateWaterUI();
-    }
-
-    function updateWaterUI() {
-      document.getElementById('water-count').innerText = `${waterCount} / ${maxWater} Bicchieri`;
-      const percentage = Math.min(100, Math.round((waterCount / maxWater) * 100));
-      document.getElementById('water-progress').style.width = `${percentage}%`;
-    }
-
-    // --- Gestione Esercizio Respirazione ---
-    let isBreathing = false;
-    let breathInterval = null;
-    let phase = 0; // 0: Inspira, 1: Trattieni, 2: Espira
-
-    function toggleBreathing() {
-      const circle = document.getElementById('breath-circle');
-      const text = document.getElementById('breath-text');
-      const btnLabel = document.getElementById('breath-btn-label');
-
-      if (!isBreathing) {
-        isBreathing = true;
-        btnLabel.innerText = "Ferma Sessione";
-        runBreathCycle();
-        breathInterval = setInterval(runBreathCycle, 4000);
-      } else {
-        isBreathing = false;
-        clearInterval(breathInterval);
-        btnLabel.innerText = "Inizia Sessione";
-        text.innerText = "Pronto?";
-        circle.style.transform = "scale(1)";
-        phase = 0;
-      }
-    }
-
-    function runBreathCycle() {
-      const circle = document.getElementById('breath-circle');
-      const text = document.getElementById('breath-text');
-
-      if (phase === 0) {
-        text.innerText = "Inspira...";
-        circle.style.transform = "scale(1.3)";
-        phase = 1;
-      } else if (phase === 1) {
-        text.innerText = "Trattieni...";
-        phase = 2;
-      } else {
-        text.innerText = "Espira...";
-        circle.style.transform = "scale(1)";
-        phase = 0;
-      }
-    }
-
-    // --- Gestione Diario & Umore ---
-    let selectedMood = "Calmo 😌";
-
-    function selectMood(mood) {
-      selectedMood = mood;
-      document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('ring-2', 'ring-amber-500', 'bg-amber-50'));
-      event.currentTarget.classList.add('ring-2', 'ring-amber-500', 'bg-amber-50');
-    }
-
-    function saveJournalEntry() {
-      const input = document.getElementById('journal-input');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const entries = JSON.parse(localStorage.getItem('zen_journal') || '[]');
-      const newEntry = {
-        id: Date.now(),
-        mood: selectedMood,
-        text: text,
-        time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
-      };
-
-      entries.unshift(newEntry);
-      localStorage.setItem('zen_journal', JSON.stringify(entries));
-      input.value = '';
-      loadJournal();
-    }
-
-    function loadJournal() {
-      const list = document.getElementById('journal-list');
-      const entries = JSON.parse(localStorage.getItem('zen_journal') || '[]');
-      
-      if (entries.length === 0) {
-        list.innerHTML = `<p class="text-xs text-slate-400 italic">Nessuna nota salvata oggi.</p>`;
-        return;
-      }
-
-      list.innerHTML = entries.slice(0, 5).map(e => `
-        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex items-start justify-between text-xs">
-          <div>
-            <span class="font-bold text-slate-700">${e.mood}</span>
-            <p class="text-slate-600 mt-0.5">${e.text}</p>
-          </div>
-          <span class="text-slate-400 font-mono text-[10px] ml-2">${e.time}</span>
+    <!-- ============================================================ -->
+    <!--  TAB: PROGRESSI                                               -->
+    <!-- ============================================================ -->
+    <div class="tab" id="tab-progressi">
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="st-days">0</div>
+                <div class="stat-label">Giorni Tracciati</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="st-wk">0</div>
+                <div class="stat-label">Allenamenti Completati</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="st-water">0</div>
+                <div class="stat-label">Media Acqua (bicchieri)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="st-habits">0%</div>
+                <div class="stat-label">Media Abitudini</div>
+            </div>
         </div>
-      `).join('');
+        <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">📅 Storico Giornate</div>
+            <div id="history-list">
+                <p style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:24px 0;">
+                    Nessun dato ancora.<br>Salva la tua prima giornata!
+                </p>
+            </div>
+        </div>
+        <button class="btn btn-danger btn-sm btn-full" onclick="clearHistory()" style="margin-top:4px;">
+            🗑️ Cancella Tutti i Dati
+        </button>
+    </div>
+
+</main>
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-oggi" onclick="showTab('oggi')">
+        <span class="ni">🏠</span><span>Oggi</span>
+    </button>
+    <button class="nav-btn" id="nav-allenamento" onclick="showTab('allenamento')">
+        <span class="ni">💪</span><span>Allenamento</span>
+    </button>
+    <button class="nav-btn" id="nav-progressi" onclick="showTab('progressi')">
+        <span class="ni">📊</span><span>Progressi</span>
+    </button>
+</nav>
+
+<script>
+// =====================================================================
+//  DATA
+// =====================================================================
+
+const QUOTES = [
+    { text: "Prenditi cura del tuo corpo, è l'unico posto in cui devi vivere.", author: "Jim Rohn" },
+    { text: "La salute non è tutto, ma senza salute tutto è niente.", author: "Arthur Schopenhauer" },
+    { text: "Il corpo è come un giardino: hai bisogno di coltivarlo ogni giorno.", author: "Anonimo" },
+    { text: "Muoviti, respira, vivi. La vita è troppo preziosa per passarla seduti.", author: "Anonimo" },
+    { text: "Ogni passo che fai oggi è un investimento nel tuo futuro.", author: "Anonimo" },
+    { text: "La mente è tutto. Diventi ciò che pensi.", author: "Buddha" },
+    { text: "La disciplina è il ponte tra gli obiettivi e i risultati.", author: "Jim Rohn" },
+    { text: "Il benessere è uno stile di vita, non una destinazione.", author: "Anonimo" },
+    { text: "Non devi essere grande per iniziare, ma devi iniziare per diventare grande.", author: "Zig Ziglar" },
+    { text: "Ogni mattina hai la scelta: continuare a dormire con i tuoi sogni o alzarti e realizzarli.", author: "Anonimo" },
+    { text: "L'esercizio fisico è il farmaco più potente che esista.", author: "Anonimo" },
+    { text: "Piccoli progressi ogni giorno portano a grandi risultati.", author: "Anonimo" },
+    { text: "La tua salute è il tuo patrimonio più prezioso.", author: "Anonimo" },
+    { text: "Non aspettare di sentirti motivato. Agisci, e la motivazione seguirà.", author: "Anonimo" },
+];
+
+const MOODS = [
+    { emoji: "🌟", label: "Eccellente" },
+    { emoji: "😊", label: "Bene" },
+    { emoji: "😌", label: "Sereno" },
+    { emoji: "😴", label: "Stanco" },
+    { emoji: "😣", label: "Difficile" },
+];
+
+const HABITS = [
+    { id: "h1", icon: "🌅", label: "Mi sono alzato/a puntuale" },
+    { id: "h2", icon: "🧘", label: "10 minuti di meditazione" },
+    { id: "h3", icon: "📵", label: "1 ora senza smartphone al mattino" },
+    { id: "h4", icon: "🥗", label: "Ho mangiato verdure oggi" },
+    { id: "h5", icon: "😴", label: "Dormito 7-8 ore la notte scorsa" },
+    { id: "h6", icon: "📖", label: "Letto almeno 10 minuti" },
+    { id: "h7", icon: "🙏", label: "Praticato la gratitudine" },
+];
+
+// =====================================================================
+//  WORKOUT PLANS  (indice = giorno della settimana JS: 0=Dom ... 6=Sab)
+// =====================================================================
+const WORKOUTS = [
+    /* 0 – DOMENICA */
+    {
+        day: "Domenica",
+        theme: "🧘 Pilates & Recupero Attivo",
+        description: "Una sessione rigenerante per recuperare, migliorare flessibilità e mobilità corporea. Perfetta per chiudere la settimana.",
+        totalMin: 30,
+        equipment: ["Fascia Pilates", "Tappetino"],
+        exercises: [
+            {
+                name: "Riscaldamento Articolare",
+                duration: "5 min",
+                desc: "Esegui movimenti circolari lenti per ogni articolazione: collo (10 cerchi), spalle (10 cerchi avanti + indietro), fianchi (10 cerchi), ginocchia (10 cerchi), caviglie (10 cerchi per piede). Muoviti senza forzare.",
+                tip: "💡 Respira profondamente durante ogni movimento. Non affrettarti: il riscaldamento è fondamentale per evitare infortuni.",
+                yt: "https://www.youtube.com/results?search_query=riscaldamento+articolare+pilates+5+minuti+casa"
+            },
+            {
+                name: "Il Cento (The Hundred) con Fascia",
+                duration: "6 min",
+                desc: "Sdraiati sulla schiena. Metti la fascia attorno alle cosce, porta le gambe a 90°, alza testa e spalle da terra. Pompa le braccia tese su e giù per 100 volte: inspira per 5 pompate, espira per 5. Fai 3 serie da 100 pompe con 45 sec di pausa.",
+                tip: "💡 Mantieni l'addome contratto e premuto verso il pavimento. Non tirare il collo con le mani.",
+                yt: "https://www.youtube.com/results?search_query=pilates+hundred+cento+fascia+elastica+principianti"
+            },
+            {
+                name: "Roll Up (Arrotolamento della Schiena)",
+                duration: "5 min",
+                desc: "Sdraiati con le braccia distese sopra la testa. Inspirando, porta le braccia verso il soffitto; espirando, arrotola la schiena vertebra per vertebra fino a toccare le punte dei piedi. Risali lentamente. Esegui 10 ripetizioni.",
+                tip: "💡 Movimento lento e controllato. Immagina di 'scollare' la schiena dal pavimento un vertebra alla volta. Evita lo slancio.",
+                yt: "https://www.youtube.com/results?search_query=pilates+roll+up+arrotolamento+schiena+casa"
+            },
+            {
+                name: "Ponte con Fascia (Glute Bridge)",
+                duration: "6 min",
+                desc: "Sdraiati sulla schiena, fascia sopra le ginocchia, piedi a terra, larghezza anche. Spingi i fianchi verso l'alto mantenendo la fascia in leggera tensione verso l'esterno. Tieni 2 secondi in alto, poi scendi lentamente. 3 serie da 15 ripetizioni, 45 sec di riposo.",
+                tip: "💡 Premi i talloni a terra e stringi i glutei al massimo in cima al movimento. La fascia ti aiuta ad attivare il medio gluteo.",
+                yt: "https://www.youtube.com/results?search_query=glute+bridge+fascia+pilates+glutei+casa"
+            },
+            {
+                name: "Clam Shell con Fascia",
+                duration: "5 min",
+                desc: "Sdraiati su un fianco con la fascia sopra le ginocchia. Gambe piegate a 90°, piedi sovrapposti. Apri il ginocchio superiore verso il soffitto come un libro, mantenendo i piedi uniti e il bacino fermo. 3 serie da 15 ripetizioni per lato.",
+                tip: "💡 Non far ruotare il bacino all'indietro. Il movimento deve essere piccolo, controllato e focalizzato sul gluteo.",
+                yt: "https://www.youtube.com/results?search_query=clam+shell+fascia+elastica+glutei+pilates+casa"
+            },
+            {
+                name: "Stretching Finale",
+                duration: "3 min",
+                desc: "Child's Pose (posizione del bambino) 30 sec, torsione spinale sdraiata 30 sec per lato, stiramento dei flessori dell'anca in posizione di affondo 30 sec per lato, cat-cow 1 min. Respira profondamente.",
+                tip: "💡 Mai forzare uno stretch. Fermati dove senti tensione piacevole. Il recupero è parte dell'allenamento!",
+                yt: "https://www.youtube.com/results?search_query=stretching+pilates+rilassamento+finale+casa"
+            }
+        ]
+    },
+
+    /* 1 – LUNEDÌ */
+    {
+        day: "Lunedì",
+        theme: "🪢 Cardio + Salto con la Corda",
+        description: "Allenamento cardiovascolare esplosivo per bruciare calorie, migliorare la resistenza e la coordinazione. Settimana, si comincia!",
+        totalMin: 30,
+        equipment: ["Corda per saltare", "Scarpe da ginnastica"],
+        exercises: [
+            {
+                name: "Riscaldamento – Marcia + Jumping Jack",
+                duration: "5 min",
+                desc: "2 min di marcia sul posto con ginocchia alte, poi 1 min di jumping jack, poi 1 min di high knees leggeri, poi 1 min di arm circles (cerchi con le braccia avanti e indietro). Aumenta gradualmente il ritmo.",
+                tip: "💡 Il riscaldamento previene gli infortuni! Non saltarlo mai, soprattutto prima del cardio intenso.",
+                yt: "https://www.youtube.com/results?search_query=riscaldamento+cardio+5+minuti+casa+jumping+jack"
+            },
+            {
+                name: "Salto con la Corda – Base",
+                duration: "5 min",
+                desc: "Salta con ritmo regolare, atterrando dolcemente sulla punta dei piedi con le ginocchia leggermente piegate. Tieni i gomiti vicini al corpo e fai ruotare i polsi, non le braccia. Struttura: 3 min di salto continuo + 2 min recupero attivo (marcia sul posto).",
+                tip: "💡 Se sei alle prime armi, inizia con 30 sec di salto e 30 di pausa, poi aumenta progressivamente.",
+                yt: "https://www.youtube.com/results?search_query=salto+corda+principianti+tutorial+tecnica+corretta"
+            },
+            {
+                name: "Corda – Boxer Step (Salto Alternato)",
+                duration: "5 min",
+                desc: "Alterna il peso da un piede all'altro come un pugile mentre salti la corda. Questo riduce l'impatto sulle ginocchia e migliora la coordinazione. 3 round da 1 min con 40 sec di recupero tra i round.",
+                tip: "💡 Mantieni le spalle rilassate e lo sguardo dritto davanti a te. Il ritmo costante conta più della velocità.",
+                yt: "https://www.youtube.com/results?search_query=corda+boxer+step+jump+rope+alternato+allenamento"
+            },
+            {
+                name: "Burpees",
+                duration: "5 min",
+                desc: "Da in piedi: scendi con le mani a terra → salta (o cammina) i piedi indietro in posizione plank → esegui un piegamento (opzionale) → salta i piedi in avanti → salta in alto con le braccia sopra la testa. 3 serie da 8 ripetizioni con 60 sec di riposo.",
+                tip: "💡 Versione facilitata: invece di saltare, fai un passo alla volta. Va benissimo! La forma è più importante della velocità.",
+                yt: "https://www.youtube.com/results?search_query=burpees+come+eseguirli+correttamente+casa"
+            },
+            {
+                name: "Corda – Sprint Finale (Tabata)",
+                duration: "5 min",
+                desc: "5 minuti totali stile Tabata: 20 sec di salto veloce alla massima intensità + 10 sec di pausa completa. Ripeti per 10 round. Conta quante ripetizioni completi in ogni round e cerca di migliorare.",
+                tip: "💡 Piccola sfida: annota il tuo punteggio e battilo la prossima settimana!",
+                yt: "https://www.youtube.com/results?search_query=corda+tabata+20+10+sprint+allenamento+casa"
+            },
+            {
+                name: "Cool Down + Stretching Gambe",
+                duration: "5 min",
+                desc: "1 min di marcia lenta sul posto. Poi: stretching polpacci contro il muro (30 sec per gamba), quadricipiti in piedi (30 sec per gamba), hamstring in posizione seduta (1 min), flessori dell'anca in affondo (30 sec per lato).",
+                tip: "💡 Lo stretching dopo il cardio è fondamentale per ridurre l'indolenzimento muscolare del giorno dopo.",
+                yt: "https://www.youtube.com/results?search_query=stretching+gambe+polpacci+dopo+cardio+jump+rope"
+            }
+        ]
+    },
+
+    /* 2 – MARTEDÌ */
+    {
+        day: "Martedì",
+        theme: "🏋️ Forza con i Pesi",
+        description: "Sessione di tonificazione muscolare con manubri. Adatto a tutti i livelli, con progressioni chiare per migliorare nel tempo.",
+        totalMin: 30,
+        equipment: ["Manubri (o bottiglie d'acqua piene)", "Tappetino"],
+        exercises: [
+            {
+                name: "Riscaldamento – Mobilità Articolare",
+                duration: "5 min",
+                desc: "Cerchi con le spalle avanti e indietro (1 min), rotazione del busto con braccia aperte (1 min), squat a corpo libero lenti (1 min), hip circles (1 min), plie squat con pausa in basso (1 min).",
+                tip: "💡 Muoviti lentamente e concentrati sulla sensazione di ogni articolazione che si scalda.",
+                yt: "https://www.youtube.com/results?search_query=riscaldamento+mobilita+forza+pesi+casa+allenamento"
+            },
+            {
+                name: "Squat con Manubri",
+                duration: "6 min",
+                desc: "Stai in piedi con un manubrio in ogni mano (o uno tenuto al petto). Piedi a larghezza delle spalle, punte leggermente verso l'esterno. Scendi come se dovessi sederti su una sedia, ginocchia nella direzione delle punte, schiena dritta. Risali spingendo sui talloni. 3 serie × 12 rip, 60 sec riposo.",
+                tip: "💡 Le ginocchia non devono andare verso l'interno. La schiena sempre dritta: immagina di avere un libro sulla testa.",
+                yt: "https://www.youtube.com/results?search_query=squat+manubri+tecnica+corretta+casa+beginners"
+            },
+            {
+                name: "Shoulder Press (Press Spalle con Manubri)",
+                duration: "5 min",
+                desc: "In piedi o seduto, manubri all'altezza delle orecchie, gomiti a 90°. Spingi i manubri verso l'alto fino a quasi toccarli sopra la testa, poi riabbassa controllato fino alla posizione di partenza. Non bloccare i gomiti in cima. 3 serie × 12 rip, 60 sec riposo.",
+                tip: "💡 Non inarcare la schiena bassa. Contrai gli addominali durante tutto il movimento per stabilizzare.",
+                yt: "https://www.youtube.com/results?search_query=shoulder+press+manubri+casa+tecnica+spalle"
+            },
+            {
+                name: "Affondi con Manubri (Lunges)",
+                duration: "5 min",
+                desc: "Stai in piedi con un manubrio per mano. Fai un grande passo avanti con una gamba, abbassa il ginocchio posteriore quasi fino a terra, poi spingiti indietro alla posizione iniziale. Alterna le gambe a ogni ripetizione. 3 serie × 10 rip per gamba, 60 sec riposo.",
+                tip: "💡 Il ginocchio anteriore non deve superare la punta del piede. Il busto rimane eretto durante tutto il movimento.",
+                yt: "https://www.youtube.com/results?search_query=affondi+lunges+manubri+tecnica+corretta+casa"
+            },
+            {
+                name: "Rematore con Manubri (Bent-Over Row)",
+                duration: "5 min",
+                desc: "Piedi a larghezza spalle, piega il busto in avanti a circa 45°, schiena piatta (non arrotondata), manubri che pendono davanti. Tira i manubri verso le anche/fianchi stringendo i muscoli della schiena, poi abbassa lentamente. 3 serie × 12 rip, 60 sec riposo.",
+                tip: "💡 Non usare il momento. Il movimento deve essere lento e controllato. Immagina di stringere una matita tra le scapole.",
+                yt: "https://www.youtube.com/results?search_query=rematore+manubri+schiena+bent+over+row+casa"
+            },
+            {
+                name: "Defaticamento + Stretching Braccia",
+                duration: "4 min",
+                desc: "Stretching bicipiti: porta il braccio dietro la schiena con l'aiuto dell'altro braccio (30 sec per lato). Tricipiti: gomito sopra la testa (30 sec per lato). Petto: braccia aperte contro un muro (1 min). Spalle: braccio attraverso il petto (30 sec per lato).",
+                tip: "💡 Tieni ogni posizione senza rimbalzare. Respira profondamente.",
+                yt: "https://www.youtube.com/results?search_query=stretching+braccia+spalle+dopo+allenamento+pesi+casa"
+            }
+        ]
+    },
+
+    /* 3 – MERCOLEDÌ */
+    {
+        day: "Mercoledì",
+        theme: "⚡ HIIT Cardio Bruciagrassi",
+        description: "Allenamento ad alta intensità intervallato (HIIT) per massimizzare il consumo calorico in breve tempo. Intenso ma efficace!",
+        totalMin: 30,
+        equipment: ["Solo il tuo corpo!", "Tappetino (opzionale)"],
+        exercises: [
+            {
+                name: "Riscaldamento Attivo",
+                duration: "3 min",
+                desc: "1 min di butt kicks (trottando, porta i talloni verso i glutei), 1 min di high knees (ginocchia alte trottando sul posto), 1 min di jumping jack lenti. Inizia piano e aumenta gradualmente.",
+                tip: "💡 Questo riscaldamento porta la frequenza cardiaca al livello giusto per l'HIIT. Non saltarlo!",
+                yt: "https://www.youtube.com/results?search_query=riscaldamento+HIIT+3+minuti+casa+cardio"
+            },
+            {
+                name: "HIIT Circuit – Round 1",
+                duration: "11 min",
+                desc: "8 esercizi × 40 sec di lavoro / 20 sec di riposo:\n1️⃣ Squat Jump\n2️⃣ Mountain Climbers\n3️⃣ Burpees\n4️⃣ High Knees veloci\n5️⃣ Jumping Jacks\n6️⃣ Plank Shoulder Tap\n7️⃣ Star Jumps\n8️⃣ Speed Skaters (salti laterali)",
+                tip: "💡 Massima intensità nei 40 sec, poi recupera DAVVERO nei 20 sec. Qualità > quantità. Modifica gli esercizi se necessario.",
+                yt: "https://www.youtube.com/results?search_query=HIIT+30+minuti+casa+senza+attrezzi+italiano+principianti"
+            },
+            {
+                name: "Recupero Attivo",
+                duration: "2 min",
+                desc: "Cammina sul posto a ritmo lento. Respira profondamente (inspira dal naso, espira dalla bocca). Bevi un sorso d'acqua. Scuoti le gambe per ridurre la tensione muscolare.",
+                tip: "💡 Il recupero attivo aiuta il corpo a smaltire il lattato più velocemente. Non sederti e non fermarti completamente.",
+                yt: ""
+            },
+            {
+                name: "HIIT Circuit – Round 2",
+                duration: "11 min",
+                desc: "Ripeti gli stessi 8 esercizi del Round 1 con la stessa struttura 40/20. Cerca di mantenere la stessa intensità o aumentarla se ce la fai. Ricorda di fare ogni esercizio con la forma corretta, anche quando sei stanco/a.",
+                tip: "💡 Se sei al limite, abbassa l'intensità ma non fermarti. Continua a muoverti! Il tuo corpo si adatterà settimana dopo settimana.",
+                yt: "https://www.youtube.com/results?search_query=HIIT+round+2+cardio+bruciagrassi+30+minuti+casa"
+            },
+            {
+                name: "Cool Down + Stretching",
+                duration: "3 min",
+                desc: "Marcia lenta 1 min. Child's pose 30 sec. Stiramento hamstring sdraiato: porta una gamba verso il petto (30 sec per gamba). Torsione spinale sdraiato 30 sec per lato. Respira profondamente.",
+                tip: "💡 Non saltare il cool down! Abbassa gradualmente la frequenza cardiaca per prevenire capogiri.",
+                yt: "https://www.youtube.com/results?search_query=cool+down+stretching+dopo+HIIT+recupero+casa"
+            }
+        ]
+    },
+
+    /* 4 – GIOVEDÌ */
+    {
+        day: "Giovedì",
+        theme: "🎀 Pilates con Fasce Elastiche",
+        description: "Tonificazione e scultura dei muscoli profondi con l'utilizzo delle fasce pilates. Ottimo per glutei, fianchi e core.",
+        totalMin: 30,
+        equipment: ["Fascia Pilates resistenza leggera/media", "Tappetino"],
+        exercises: [
+            {
+                name: "Riscaldamento – Cat-Cow + Mobilità",
+                duration: "5 min",
+                desc: "Cat-Cow (arco e curva della schiena a quattro zampe) sincronizzato col respiro: 1 min. Bird-Dog alternato: porta braccio e gamba opposti in allungamento: 1 min per lato. Rotazione del busto seduto: 2 min. Respirazione diaframmatica profonda: 1 min.",
+                tip: "💡 Sincronizza ogni movimento con il respiro. Il Cat-Cow è uno degli esercizi più efficaci per la salute della colonna.",
+                yt: "https://www.youtube.com/results?search_query=cat+cow+bird+dog+pilates+riscaldamento+mobilita+schiena"
+            },
+            {
+                name: "Abduttori in Piedi con Fascia",
+                duration: "5 min",
+                desc: "Fascia attorno alle caviglie. In piedi accanto a un muro (tieniti se necessario). Alza una gamba lateralmente, mantenendo il piede a martello e contraendo il gluteo. Abbassa lentamente senza toccare l'altra gamba. 3 serie × 15 rip per lato, 45 sec riposo.",
+                tip: "💡 Muoviti lentamente, senza dondolare il corpo. Senti il gluteo che lavora, non il fianco.",
+                yt: "https://www.youtube.com/results?search_query=abduttori+fascia+elastica+glutei+laterale+casa"
+            },
+            {
+                name: "Donkey Kick con Fascia",
+                duration: "5 min",
+                desc: "A quattro zampe, fascia attorno ai polpacci. Mantieni il ginocchio a 90° e calcia una gamba verso il soffitto (calcio all'indietro e in su), contraendo il gluteo in cima. Abbassa senza toccare il pavimento. 3 serie × 15 rip per gamba, 45 sec riposo.",
+                tip: "💡 Non inarcare la schiena bassa per 'alzare' la gamba più in alto. La forza deve venire dal gluteo.",
+                yt: "https://www.youtube.com/results?search_query=donkey+kick+fascia+elastica+glutei+pilates+casa"
+            },
+            {
+                name: "Side-Lying Leg Lift con Fascia",
+                duration: "5 min",
+                desc: "Sdraiati su un fianco, fascia sulle caviglie, corpo allineato. Alza la gamba superiore verso l'alto lentamente (non troppo in alto), poi abbassa quasi fino a toccare l'altra gamba. 3 serie × 15 rip per lato. Senti il medio gluteo e il tensore della fascia lata.",
+                tip: "💡 La coscia superiore punta leggermente verso il soffitto, non in avanti. Il bacino rimane fermo.",
+                yt: "https://www.youtube.com/results?search_query=side+leg+lift+fascia+elastica+fianchi+glutei+casa"
+            },
+            {
+                name: "Tricep Extension con Fascia (sdraiata)",
+                duration: "5 min",
+                desc: "Sdraiati sulla schiena. Tieni la fascia con entrambe le mani a larghezza spalle, braccia tese verso il soffitto. Piega i gomiti abbassando le mani verso la fronte (skull crusher) poi stendi di nuovo. I gomiti rimangono fermi e puntati verso il soffitto. 3 serie × 15 rip, 45 sec riposo.",
+                tip: "💡 Muovi solo gli avambracci. I gomiti sono il perno fisso del movimento.",
+                yt: "https://www.youtube.com/results?search_query=tricep+extension+fascia+elastica+tricipiti+sdraiata+casa"
+            },
+            {
+                name: "Stretching Pilates Finale",
+                duration: "5 min",
+                desc: "Rotazione della colonna sdraiata (ginocchia al petto, poi cadono da un lato) 1 min per lato. Figura 4 / Piriforme stretch 30 sec per lato. Child's pose 1 min. Stiramento del collo laterale 30 sec per lato.",
+                tip: "💡 Respira in ogni posizione. Lascia che la gravità ti aiuti ad andare più in profondità.",
+                yt: "https://www.youtube.com/results?search_query=stretching+finale+pilates+flessibilita+figura+4+casa"
+            }
+        ]
+    },
+
+    /* 5 – VENERDÌ */
+    {
+        day: "Venerdì",
+        theme: "💪 Forza + Core Power",
+        description: "Sessione combinata di rinforzo muscolare totale e potenziamento del core. Il venerdì si chiude alla grande!",
+        totalMin: 30,
+        equipment: ["Manubri", "Tappetino"],
+        exercises: [
+            {
+                name: "Riscaldamento – Corpo Libero",
+                duration: "5 min",
+                desc: "Piegamenti sulle ginocchia 10 rip, squat a corpo libero 15 rip, marcia sul posto 1 min, rotazione del busto con braccia aperte 1 min, inchworm (tocca le punte, cammina con le mani in plank, risali) 5 rip.",
+                tip: "💡 Gli inchworm riscaldano tutta la catena posteriore e preparano perfettamente per il deadlift.",
+                yt: "https://www.youtube.com/results?search_query=riscaldamento+corpo+libero+forza+core+inchworm+casa"
+            },
+            {
+                name: "Deadlift con Manubri (Stacco Rumeno)",
+                duration: "5 min",
+                desc: "In piedi, manubri davanti alle cosce. Piega leggermente le ginocchia e abbassa i manubri lungo le gambe mantenendo la schiena piatta come un tavolo, fino a sentire lo stretch negli hamstring (coscia posteriore). Risali contraendo i glutei. 3 serie × 12 rip, 60 sec riposo.",
+                tip: "💡 La schiena DEVE rimanere piatta. Se arrotondi, riduci il peso. Questo esercizio allena tutta la catena posteriore: schiena, glutei, hamstring.",
+                yt: "https://www.youtube.com/results?search_query=deadlift+rumeno+manubri+tecnica+schiena+hamstring+casa"
+            },
+            {
+                name: "Plank Isometrico + Varianti",
+                duration: "5 min",
+                desc: "Plank frontale 45 sec (riposo 15 sec) × 2. Poi: plank laterale destro 30 sec → riposo 10 sec → plank laterale sinistro 30 sec → riposo 10 sec. Il corpo deve formare una linea retta dalla testa ai talloni.",
+                tip: "💡 Non alzare i fianchi e non lasciarli scendere. Contrai il core, i glutei e le cosce tutto il tempo.",
+                yt: "https://www.youtube.com/results?search_query=plank+core+varianti+laterale+frontale+addominali+casa"
+            },
+            {
+                name: "Russian Twist con Manubrio",
+                duration: "5 min",
+                desc: "Seduto a terra, schiena a 45°, ginocchia piegate. Tieni un manubrio con entrambe le mani davanti al petto. Ruota il busto da destra a sinistra toccando il pavimento con il manubrio ad ogni lato. 3 serie × 20 (10 per lato), 60 sec riposo. Versione avanzata: piedi sollevati da terra.",
+                tip: "💡 Mantieni il petto aperto e le spalle indietro. La rotazione viene dal core, non dalle braccia.",
+                yt: "https://www.youtube.com/results?search_query=russian+twist+manubrio+addominali+obliqui+corretta"
+            },
+            {
+                name: "Thruster (Squat + Shoulder Press)",
+                duration: "6 min",
+                desc: "Tieni i manubri all'altezza delle spalle. Esegui uno squat completo e, nella risalita, usa la spinta delle gambe per spingere i manubri verso l'alto completando un press. È un esercizio combinato che lavora gambe, core e spalle. 3 serie × 10 rip, 60 sec riposo.",
+                tip: "💡 La potenza parte dalle gambe! Sfrutta la spinta della risalita per il press. Respira: inspira scendendo, espira spingendo su.",
+                yt: "https://www.youtube.com/results?search_query=thruster+dumbbell+squat+shoulder+press+allenamento+casa"
+            },
+            {
+                name: "Cool Down Completo",
+                duration: "4 min",
+                desc: "Stretching hamstring (seduto a terra, gambe tese, chinati in avanti) 1 min. Apertura del petto (mani intrecciate dietro la schiena) 30 sec. Stretching flessori dell'anca in affondo 30 sec per lato. Child's pose 1 min.",
+                tip: "💡 Ottimo lavoro questa settimana! Il riposo e il recupero sono fondamentali per la crescita muscolare.",
+                yt: "https://www.youtube.com/results?search_query=stretching+completo+dopo+allenamento+forza+pesi+casa"
+            }
+        ]
+    },
+
+    /* 6 – SABATO */
+    {
+        day: "Sabato",
+        theme: "🪢 Corda + Core Potenziamento",
+        description: "Sessione mista di salto con la corda ad intervalli e rafforzamento del core. Chiudi la settimana alla grande!",
+        totalMin: 30,
+        equipment: ["Corda per saltare", "Tappetino"],
+        exercises: [
+            {
+                name: "Riscaldamento Dinamico",
+                duration: "5 min",
+                desc: "Leg swing frontali: tieni un muro e dondola la gamba avanti-indietro (1 min per gamba). Hip circles 1 min. Inchworm 3 rip lente. Arm swings (braccia che si incrociano davanti) 30 sec. Torso twist (rotazione del busto) 30 sec.",
+                tip: "💡 Gli inchworm e i leg swing sono ideali per riscaldare sia la parte superiore che inferiore del corpo.",
+                yt: "https://www.youtube.com/results?search_query=riscaldamento+dinamico+corda+core+allenamento+casa"
+            },
+            {
+                name: "Corda – Interval Round 1",
+                duration: "6 min",
+                desc: "Struttura: 3 min di salto continuo con qualsiasi tecnica (base, boxer step, alternato) + 1 min di recupero attivo (marcia sul posto). Ripeti: ancora 2 min di corda veloce. Total time: 6 min.",
+                tip: "💡 Se non riesci continuativamente, simula il salto senza corda: il gesto delle braccia + salto. L'importante è mantenere il cuore attivo!",
+                yt: "https://www.youtube.com/results?search_query=salto+corda+interval+training+cardio+allenamento+casa"
+            },
+            {
+                name: "Core Circuit – Parte 1",
+                duration: "5 min",
+                desc: "Crunch classico 20 rip → Leg raise sdraiato (gambe tese che salgono a 90°) 15 rip → Bicycle crunch (gomito verso ginocchio opposto) 20 rip totali (10 per lato). Fai 2 round con 30 sec di recupero tra i round.",
+                tip: "💡 Nel crunch: espira nella salita e non tirare il collo. Nel leg raise: schiena bassa incollata al pavimento.",
+                yt: "https://www.youtube.com/results?search_query=core+circuit+crunch+leg+raise+bicicletta+addominali+casa"
+            },
+            {
+                name: "Corda – Interval Round 2",
+                duration: "6 min",
+                desc: "Stesso schema del Round 1 ma prova ad aumentare la velocità o cambia tecnica (boxer step, corsa sul posto con corda). Obiettivo: superare la performance del Round 1! 3 min + 1 min recupero + 2 min finale.",
+                tip: "💡 Punta a superare la performance del Round 1. Nota i tuoi progressi settimana dopo settimana.",
+                yt: "https://www.youtube.com/results?search_query=corda+avanzato+veloce+intervalli+cardio+casa"
+            },
+            {
+                name: "Core Circuit – Parte 2",
+                duration: "5 min",
+                desc: "Plank frontale 45 sec. Superman sdraiato: da pancia in giù, alza contemporaneamente braccia e gambe (15 rip). Plank laterale 30 sec per lato. Dead Bug: sdraiato, estendi braccio e gamba opposti verso il basso (10 rip per lato). 1 round.",
+                tip: "💡 Il Superman rinforza la schiena bassa: essenziale per prevenire dolori! Il Dead Bug attiva il core profondo.",
+                yt: "https://www.youtube.com/results?search_query=core+plank+superman+dead+bug+schiena+addominali+casa"
+            },
+            {
+                name: "Stretching & Recupero Finale",
+                duration: "3 min",
+                desc: "Stretching polpacci: piede contro il muro, tacco a terra (30 sec per gamba). Hamstring: piega il busto in avanti con le gambe tese (1 min). Quadricipiti in piedi (30 sec per gamba). Respira profondamente e goditi il meritato riposo!",
+                tip: "💡 Complimenti per aver completato la settimana! Domani è Domenica: giorno di recupero con Pilates.",
+                yt: "https://www.youtube.com/results?search_query=stretching+recupero+polpacci+hamstring+quadricipiti+dopo+allenamento"
+            }
+        ]
     }
+];
 
-    // --- Gestione Abitudini ---
-    const defaultHabits = [
-      { id: 1, text: "7+ ore di sonno riposante", done: false },
-      { id: 2, text: "20 min di camminata / esercizio", done: false },
-      { id: 3, text: "Lettura o momento offline", done: false },
-      { id: 4, text: "5 minuti di meditazione/respiro", done: false }
-    ];
+// =====================================================================
+//  STATE
+// =====================================================================
+let S = {
+    water: 0,
+    mood: null,
+    notes: [],
+    habits: {},
+    workoutDone: []
+};
 
-    function loadHabits() {
-      let habits = JSON.parse(localStorage.getItem('zen_habits'));
-      if (!habits || habits.length === 0) {
-        habits = defaultHabits;
-        localStorage.setItem('zen_habits', JSON.stringify(habits));
-      }
-      renderHabits(habits);
+let breathActive = false, breathTimer = null, breathRound = 0, breathPhaseIdx = 0;
+const BP = [
+    { name: "Inspira", dur: 4, cls: "inhale" },
+    { name: "Tieni", dur: 4, cls: "hold" },
+    { name: "Espira", dur: 4, cls: "exhale" },
+    { name: "Tieni", dur: 4, cls: "hold" }
+];
+
+// =====================================================================
+//  STORAGE HELPERS
+// =====================================================================
+function todayKey() {
+    const d = new Date();
+    return `zs-${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+function save() {
+    localStorage.setItem(todayKey(), JSON.stringify(S));
+}
+function load() {
+    const raw = localStorage.getItem(todayKey());
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    S.water = d.water || 0;
+    S.mood = d.mood !== undefined ? d.mood : null;
+    S.notes = d.notes || [];
+    S.habits = d.habits || {};
+    S.workoutDone = d.workoutDone || [];
+}
+
+// =====================================================================
+//  INIT
+// =====================================================================
+function init() {
+    const now = new Date();
+    document.getElementById('header-date').innerHTML =
+        now.toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long' });
+
+    load();
+    renderQuote();
+    renderWater();
+    renderMoods();
+    renderNotes();
+    renderHabits();
+    renderWorkout();
+}
+
+function renderQuote() {
+    const idx = new Date().getDate() % QUOTES.length;
+    document.getElementById('quote-text').textContent = '«' + QUOTES[idx].text + '»';
+    document.getElementById('quote-author').textContent = '— ' + QUOTES[idx].author;
+}
+
+// =====================================================================
+//  NAVIGATION
+// =====================================================================
+function showTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    if (name === 'progressi') renderProgress();
+}
+
+// =====================================================================
+//  WATER
+// =====================================================================
+function renderWater() {
+    const c = document.getElementById('water-glasses');
+    c.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+        const g = document.createElement('div');
+        g.className = 'glass' + (i < S.water ? ' filled' : '');
+        g.innerHTML = '<div class="fill"></div>';
+        const idx = i;
+        g.onclick = () => {
+            S.water = S.water === idx + 1 ? idx : idx + 1;
+            save(); renderWater();
+            if (S.water === 8) toast('🎉 Obiettivo idratazione raggiunto!');
+        };
+        c.appendChild(g);
     }
+    document.getElementById('water-count').textContent = S.water;
+    document.getElementById('water-ml').textContent = (S.water * 250) + ' ml';
+    document.getElementById('water-prog').style.width = (S.water / 8 * 100) + '%';
+}
+function addWater() {
+    if (S.water < 8) { S.water++; save(); renderWater(); toast('💧 Bicchiere aggiunto! (' + S.water + '/8)'); }
+    else toast('✅ Già al massimo!');
+    if (S.water === 8) toast('🎉 Obiettivo idratazione raggiunto!');
+}
+function removeWater() {
+    if (S.water > 0) { S.water--; save(); renderWater(); toast('Rimosso un bicchiere (' + S.water + '/8)'); }
+}
 
-    function renderHabits(habits) {
-      const container = document.getElementById('habits-list');
-      container.innerHTML = habits.map(h => `
-        <div class="flex items-center justify-between p-2 rounded-xl border ${h.done ? 'bg-emerald-50/50 border-emerald-200' : 'bg-slate-50 border-slate-100'} transition">
-          <label class="flex items-center space-x-3 cursor-pointer flex-1">
-            <input type="checkbox" onchange="toggleHabit(${h.id})" ${h.done ? 'checked' : ''} class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300">
-            <span class="text-xs ${h.done ? 'line-through text-slate-400 font-normal' : 'text-slate-700 font-medium'}">${h.text}</span>
-          </label>
-          <button onclick="removeHabit(${h.id})" class="text-slate-400 hover:text-rose-500 p-1 transition">
-            <i data-lucide="trash
+// =====================================================================
+//  BREATHING
+// =====================================================================
+function toggleBreathing() {
+    if (breathActive) { breathActive = false; clearTimeout(breathTimer); document.getElementById('breath-btn').textContent = '▶ Riprendi'; }
+    else { breathActive = true; document.getElementById('breath-btn').textContent = '⏸ Pausa'; document.getElementById('breath-counter').style.display = 'block'; document.getElementById('breath-rounds').style.display = 'block'; runPhase(); }
+}
+function resetBreathing() {
+    breathActive = false; clearTimeout(breathTimer); breathRound = 0; breathPhaseIdx = 0;
+    document.getElementById('breath-btn').textContent = '▶ Inizia';
+    document.getElementById('breath-phase').textContent = 'Clicca Start per iniziare';
+    document.getElementById('breath-inner').textContent = 'Pronto?';
+    document.getElementById('breath-circle').className = 'breath-circle';
+    document.getElementById('breath-counter').style.display = 'none';
+    document.getElementById('breath-rounds').style.display = 'none';
+}
+function runPhase() {
+    if (!breathActive) return;
+    const p = BP[breathPhaseIdx];
+    document.getElementById('breath-circle').className = 'breath-circle ' + p.cls;
+    document.getElementById('breath-phase').textContent = p.name;
+    document.getElementById('breath-inner').textContent = p.name;
+    document.getElementById('breath-rounds').textContent = 'Round ' + (breathRound + 1) + ' / 4';
+    let sec = p.dur;
+    document.getElementById('breath-counter').textContent = sec;
+    function tick() {
+        if (!breathActive) return;
+        sec--;
+        document.getElementById('breath-counter').textContent = sec;
+        if (sec <= 0) {
+            breathPhaseIdx++;
+            if (breathPhaseIdx >= BP.length) { breathPhaseIdx = 0; breathRound++; }
+            if (breathRound >= 4) { resetBreathing(); toast('🌬️ Sessione di respiro completata! Ottimo!'); return; }
+            breathTimer = setTimeout(runPhase, 100);
+        } else {
+            breathTimer = setTimeout(tick, 1000);
+        }
+    }
+    breathTimer = setTimeout(tick, 1000);
+}
+
+// =====================================================================
+//  MOOD
+// =====================================================================
+function renderMoods() {
+    const g = document.getElementById('mood-grid');
+    const l = document.getElementById('mood-labels');
+    g.innerHTML = ''; l.innerHTML = '';
+    MOODS.forEach((m, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'mood-btn' + (S.mood === i ? ' selected' : '');
+        btn.textContent = m.emoji;
+        btn.title = m.label;
+        btn.onclick = () => { S.mood = S.mood === i ? null : i; save(); renderMoods(); if (S.mood !== null) toast('Umore: ' + m.emoji + ' ' + m.label); };
+        g.appendChild(btn);
+        const lbl = document.createElement('div');
+        lbl.className = 'mood-label';
+        lbl.textContent = m.label;
+        l.appendChild(lbl);
+    });
+}
+
+// =====================================================================
+//  NOTES
+// =====================================================================
+function saveNote() {
+    const inp = document.getElementById('note-input');
+    const txt = inp.value.trim();
+    if (!txt) { toast('⚠️ Scrivi qualcosa prima!'); return; }
+    S.notes.unshift({ id: Date.now(), text: txt, mood: S.mood, date: new Date().toLocaleString('it-IT') });
+    inp.value = '';
+    save(); renderNotes();
+    toast('📝 Nota salvata!');
+}
+function deleteNote(id) {
+    S.notes = S.notes.filter(n => n.id !== id);
+    save(); renderNotes();
+    toast('🗑️ Nota eliminata');
+}
+function renderNotes() {
+    const c = document.getElementById('notes-list');
+    if (!S.notes.length) { c.innerHTML = '<p style="color:var(--text-muted);font-size:0.84rem;text-align:center;padding:8px 0;">Nessuna nota. Scrivi il tuo primo pensiero!</p>'; return; }
+    c.innerHTML = S.notes.map(n => `
+        <div class="note-item">
+            <div class="note-content">
+                <div class="note-meta">${n.mood !== null && n.mood !== undefined ? MOODS[n.mood].emoji + ' · ' : ''}${n.date}</div>
+                <div class="note-text">${n.text.replace(/</g,'&lt;')}</div>
+            </div>
+            <button class="note-del" onclick="deleteNote(${n.id})">🗑️</button>
+        </div>
+    `).join('');
+}
+
+// =====================================================================
+//  HABITS
+// =====================================================================
+function renderHabits() {
+    const c = document.getElementById('habits-list');
+    c.innerHTML = HABITS.map(h => `
+        <div class="habit-item" onclick="toggleHabit('${h.id}')">
+            <div class="habit-check ${S.habits[h.id] ? 'done' : ''}">${S.habits[h.id] ? '✓' : ''}</div>
+            <div class="habit-icon">${h.icon}</div>
+            <div class="habit-label ${S.habits[h.id] ? 'done' : ''}">${h.label}</div>
+        </div>
+    `).join('');
+    const done = Object.values(S.habits).filter(Boolean).length;
+    document.getElementById('habits-prog').style.width = (done / HABITS.length * 100) + '%';
+    document.getElementById('habits-count').textContent = done + '/' + HABITS.length + ' completate (' + Math.round(done / HABITS.length * 100) + '%)';
+}
+function toggleHabit(id) {
+    S.habits[id] = !S.habits[id];
+    save(); renderHabits();
+    const h = HABITS.find(x => x.id === id);
+    if (S.habits[id]) toast('✅ ' + h.label);
+}
+
+// =====================================================================
+//  WORKOUT
+// =====================================================================
+function renderWorkout() {
+    const dow = new Date().getDay();
+    const plan = WORKOUTS[dow];
+    const done = S.workoutDone.length;
+    const total = plan.exercises.length;
+    const pct = total > 0 ? Math.round(done / total * 100) : 0;
+
+    const exHTML = plan.exercises.map((ex, i) => {
+        const isDone = S.workoutDone.includes(i);
+        return `
+        <div class="exercise-item ${isDone ? 'done' : ''}" id="ex-${i}">
+            <div class="exercise-header">
+                <div class="exercise-num ${isDone ? 'done' : ''}">${isDone ? '✓' : i+1}</div>
+                <div class="exercise-info">
+                    <div class="exercise-name">${ex.name}</div>
+                    <div class="exercise-duration">⏱ ${ex.duration}</div>
+                </div>
+                <button class="exercise-toggle-icon" onclick="toggleDetail(${i})" title="Dettagli">
+                    ${isDone ? '✅' : '▼'}
+                </button>
+            </div>
+            <div class="accordion-content" id="ex-d-${i}">
+                <div class="exercise-desc">${ex.desc.replace(/\n/g, '<br>')}</div>
+                <div class="exercise-tip">${ex.tip}</div>
+                <div class="exercise-actions">
+                    ${ex.yt ? `<a href="${ex.yt}" target="_blank" class="yt-link">▶ Video YouTube</a>` : ''}
+                    <button class="ex-done-btn ${isDone ? 'completed' : ''}" onclick="toggleDone(${i})">
+                        ${isDone ? '✓ Completato' : '✓ Segna fatto'}
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    const completeBanner = done === total ? `
+        <div class="workout-complete">
+            <div class="wc-icon">🏆</div>
+            <h3>Allenamento Completato!</h3>
+            <p>Fantastico lavoro oggi! Hai finito tutti gli esercizi.</p>
+            <button class="wc-btn" onclick="saveDay(); showTab('progressi');">📊 Salva nei Progressi</button>
+        </div>` : '';
+
+    document.getElementById('workout-container').innerHTML = `
+        <div class="workout-hero">
+            <div class="workout-day">${plan.day.toUpperCase()}</div>
+            <div class="workout-title">${plan.theme}</div>
+            <div class="workout-desc">${plan.description}</div>
+            <div class="workout-meta">
+                <span class="workout-badge">⏱ ${plan.totalMin} min</span>
+                ${plan.equipment.map(e => `<span class="workout-badge">🔧 ${e}</span>`).join('')}
+            </div>
+        </div>
+        <div class="workout-prog-card">
+            <div class="workout-prog-top">
+                <div class="workout-prog-label">Progresso: ${done}/${total} esercizi</div>
+                <div class="workout-prog-pct">${pct}%</div>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;"></div></div>
+        </div>
+        ${exHTML}
+        ${completeBanner}
+    `;
+}
+function toggleDetail(i) {
+    const d = document.getElementById('ex-d-' + i);
+    d.classList.toggle('open');
+}
+function toggleDone(i) {
+    if (S.workoutDone.includes(i)) {
+        S.workoutDone = S.workoutDone.filter(x => x !== i);
+        toast('↩️ Esercizio rimosso');
+    } else {
+        S.workoutDone.push(i);
+        const plan = WORKOUTS[new Date().getDay()];
+        toast('💪 ' + plan.exercises[i].name + ' completato!');
+    }
+    save(); renderWorkout();
+}
+
+// =====================================================================
+//  SAVE DAY / PROGRESS
+// =====================================================================
+function saveDay() {
+    const now = new Date();
+    const hKey = `zs-hist-${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    const plan = WORKOUTS[now.getDay()];
+    const habDone = Object.values(S.habits).filter(Boolean).length;
+    localStorage.setItem(hKey, JSON.stringify({
+        date: now.toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long', year:'numeric' }),
+        dateKey: `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`,
+        water: S.water,
+        mood: S.mood,
+        habDone,
+        habTotal: HABITS.length,
+        wkDone: S.workoutDone.length,
+        wkTotal: plan.exercises.length,
+        wkName: plan.theme
+    }));
+    toast('💾 Giornata salvata nei progressi!');
+    renderProgress();
+}
+
+function loadHistory() {
+    const arr = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('zs-hist-')) {
+            try { arr.push(JSON.parse(localStorage.getItem(k))); } catch(e) {}
+        }
+    }
+    return arr.sort((a,b) => b.dateKey.localeCompare(a.dateKey));
+}
+
+function renderProgress() {
+    const hist = loadHistory();
+    document.getElementById('st-days').textContent = hist.length;
+    const wkComp = hist.filter(d => d.wkDone > 0 && d.wkDone >= d.wkTotal * 0.8).length;
+    document.getElementById('st-wk').textContent = wkComp;
+    const avgW = hist.length ? (hist.reduce((s,d) => s+(d.water||0), 0) / hist.length).toFixed(1) : 0;
+    document.getElementById('st-water').textContent = avgW;
+    const avgH = hist.length ? Math.round(hist.reduce((s,d) => s+(d.habDone/(d.habTotal||1)),0)/hist.length*100) : 0;
+    document.getElementById('st-habits').textContent = avgH + '%';
+
+    const c = document.getElementById('history-list');
+    if (!hist.length) {
+        c.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:24px 0;">Nessun dato ancora.<br>Salva la tua prima giornata!</p>';
+        return;
+    }
+    c.innerHTML = hist.map(d => {
+        const moodEm = d.mood !== null && d.mood !== undefined ? MOODS[d.mood].emoji : '—';
+        const wkPct = d.wkTotal > 0 ? Math.round(d.wkDone / d.wkTotal * 100) : 0;
+        return `
+        <div class="history-item">
+            <div class="history-date">📅 ${d.date}</div>
+            <div class="history-workout-name">${d.wkName || ''}</div>
+            <div class="history-stats">
+                <span class="hbadge w">💧 ${d.water}/8</span>
+                <span class="hbadge m">${moodEm}</span>
+                <span class="hbadge wk">💪 ${wkPct}%</span>
+                <span class="hbadge h">✅ ${d.habDone}/${d.habTotal}</span>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function clearHistory() {
+    if (!confirm('Vuoi davvero eliminare tutti i dati? Questa azione è irreversibile.')) return;
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('zs-')) keys.push(k); }
+    keys.forEach(k => localStorage.removeItem(k));
+    S = { water: 0, mood: null, notes: [], habits: {}, workoutDone: [] };
+    renderWater(); renderMoods(); renderNotes(); renderHabits(); renderWorkout(); renderProgress();
+    toast('🗑️ Tutti i dati eliminati');
+}
+
+// =====================================================================
+//  TOAST
+// =====================================================================
+let toastTm;
+function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTm);
+    toastTm = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+// =====================================================================
+//  START
+// =====================================================================
+init();
+</script>
+</body>
+</html>
