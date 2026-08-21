@@ -1567,11 +1567,14 @@ function load() {
     const raw = localStorage.getItem(todayKey());
     if (!raw) return;
     const d = JSON.parse(raw);
-    S.water = d.water || 0;
+    // FIX: clamp a 8 per evitare stati inconsistenti (es. water=12)
+    // persistiti in versioni precedenti o da test manuali.
+    S.water = Math.min(d.water || 0, 8);
     S.mood = d.mood !== undefined ? d.mood : null;
     S.notes = d.notes || [];
     S.habits = d.habits || {};
     S.workoutDone = d.workoutDone || [];
+    save(); // ripersiste subito il valore pulito
 }
 
 // ---- Profile ----
@@ -2476,7 +2479,37 @@ function renderBadges(hist, stats) {
 }
 
 function renderProgress() {
-    const hist = loadHistory();
+    let hist = loadHistory();
+
+    // FIX: merge dello stato LIVE di oggi dentro hist.
+    // Così i badge (acqua, abitudini, allenamento) e le stat-card
+    // si aggiornano in tempo reale, senza dover prima cliccare "Salva Giornata".
+    const now = new Date();
+    const tk = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const liveToday = {
+        date: now.toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long', year:'numeric' }),
+        dateKey: tk,
+        water: S.water,
+        mood: S.mood,
+        habDone: Object.values(S.habits).filter(Boolean).length,
+        habTotal: HABITS.length,
+        wkDone: S.workoutDone.length,
+        wkTotal: WORKOUTS[now.getDay()].exercises.length,
+        wkName: WORKOUTS[now.getDay()].theme
+    };
+    const idx = hist.findIndex(d => d.dateKey === tk);
+    if (idx >= 0) {
+        // prendi i massimi tra salvato e live (mai regredire uno storico salvato)
+        hist[idx] = {
+            ...hist[idx],
+            water: Math.max(hist[idx].water || 0, liveToday.water || 0),
+            habDone: Math.max(hist[idx].habDone || 0, liveToday.habDone || 0),
+            wkDone: Math.max(hist[idx].wkDone || 0, liveToday.wkDone || 0),
+        };
+    } else {
+        hist = [liveToday, ...hist];
+    }
+
     document.getElementById('st-days').textContent = hist.length;
     const wkComp = hist.filter(d => d.wkDone > 0 && d.wkDone >= d.wkTotal * 0.8).length;
     document.getElementById('st-wk').textContent = wkComp;
