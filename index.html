@@ -1,3 +1,7 @@
+inoltre vorrei una sezione con il peso dove vado a mettere i miei dati, peso altezza anni sesso, ogni giorno vado a segnare il peso, mi deve restituire l'indice BMI e farmi un grafico con l'andamento del peso, inoltre non vedo nessuna parte relativa all'alimentazione come ti avevo scritto, dammi ogni giorno delle soluzioni salutari per colazione, pranzo e cena, e mettimi video di ricette salutari, poi dammi la possibilità di inserire le foto dei miei pasti
+
+questo è il codice che mi hai generato fino ad adesso:
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -5,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZenSpace – Il tuo benessere quotidiano</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -329,11 +334,90 @@
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+        /* ====== PESO / BMI ====== */
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .field-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; display: block; font-weight: 500; }
+        .field-input, select.field-input {
+            width: 100%; padding: 10px 12px; border: 2px solid var(--border); border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem; color: var(--text);
+            transition: border-color 0.2s; background: white;
+        }
+        .field-input:focus { outline: none; border-color: var(--primary-light); }
+        .sex-toggle { display: flex; gap: 8px; }
+        .sex-btn {
+            flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: 10px;
+            background: white; font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--text-muted);
+        }
+        .sex-btn.selected { border-color: var(--primary); color: var(--primary); background: #F5F3FF; }
+        .weight-today-row { display: flex; gap: 8px; align-items: flex-end; margin-top: 4px; }
+        .weight-today-row .field-input { flex: 1; }
+        .bmi-result {
+            display: flex; align-items: center; gap: 16px; margin-top: 14px;
+            background: #F5F3FF; border-radius: 12px; padding: 14px 16px;
+        }
+        .bmi-value { font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+        .bmi-info { flex: 1; }
+        .bmi-cat { font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; }
+        .bmi-cat.underweight { color: #3B82F6; }
+        .bmi-cat.normal { color: var(--secondary); }
+        .bmi-cat.over { color: var(--accent); }
+        .bmi-cat.obese { color: var(--danger); }
+        .bmi-range { font-size: 0.72rem; color: var(--text-muted); }
+        .weight-chart-wrap { position: relative; height: 220px; margin-top: 8px; }
+        .weight-stats-row { display: flex; gap: 10px; margin-top: 12px; }
+        .w-mini-stat { flex: 1; background: #F9FAFB; border-radius: 10px; padding: 10px; text-align: center; }
+        .w-mini-value { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+        .w-mini-label { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+        .weight-log-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem;
+        }
+        .weight-log-item:last-child { border-bottom: none; }
+        .weight-log-del { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
+
+        /* ====== ALIMENTAZIONE ====== */
+        .meal-card { border-left: 4px solid var(--accent); }
+        .meal-card.lunch { border-left-color: var(--secondary); }
+        .meal-card.dinner { border-left-color: #6366F1; }
+        .meal-name { font-size: 0.98rem; font-weight: 700; margin-bottom: 4px; }
+        .meal-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 10px; }
+        .meal-kcal {
+            display: inline-block; background: #FFF7ED; color: #92400E; font-size: 0.72rem;
+            font-weight: 600; border-radius: 20px; padding: 3px 10px; margin-bottom: 10px;
+        }
+        .photo-upload-zone {
+            border: 2px dashed var(--border); border-radius: 12px; padding: 18px;
+            text-align: center; cursor: pointer; transition: all 0.2s; margin-top: 6px;
+        }
+        .photo-upload-zone:hover { border-color: var(--primary-light); background: #F5F3FF; }
+        .meal-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+        .meal-photo-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 1; }
+        .meal-photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .meal-photo-tag {
+            position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.55);
+            color: white; font-size: 0.6rem; padding: 3px 4px; text-align: center;
+        }
+        .meal-photo-del {
+            position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.55); color: white;
+            border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 0.7rem; cursor: pointer;
+        }
+        .recipe-video-link {
+            display: flex; align-items: center; gap: 8px; background: #FEE2E2; color: #DC2626;
+            border-radius: 10px; padding: 8px 12px; font-size: 0.78rem; font-weight: 600;
+            text-decoration: none; margin-top: 4px;
+        }
+        .recipe-video-link:hover { background: #FECACA; }
+
         /* ====== RESPONSIVE ====== */
         @media (max-width: 480px) {
             main { padding: 12px; }
             .card { padding: 16px; }
             .workout-title { font-size: 1.15rem; }
+            .nav-btn { font-size: 0.6rem; padding: 8px 4px 6px; }
+            .nav-btn .ni { font-size: 1.2rem; }
+            .profile-grid { grid-template-columns: 1fr 1fr; }
+            .meal-photos-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
@@ -495,6 +579,119 @@
         </button>
     </div>
 
+
+    <!-- ============================================================ -->
+    <!--  TAB: PESO                                                    -->
+    <!-- ============================================================ -->
+    <div class="tab" id="tab-peso">
+
+        <!-- Profilo -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#EDE9FE;">🙋</div>
+                <div>
+                    <div class="card-title">I Tuoi Dati</div>
+                    <div class="card-subtitle">Inserisci altezza, età e sesso per calcolare il BMI</div>
+                </div>
+            </div>
+            <div class="profile-grid">
+                <div>
+                    <label class="field-label">Altezza (cm)</label>
+                    <input type="number" class="field-input" id="prof-height" placeholder="es. 170" min="80" max="250">
+                </div>
+                <div>
+                    <label class="field-label">Età (anni)</label>
+                    <input type="number" class="field-input" id="prof-age" placeholder="es. 30" min="10" max="110">
+                </div>
+            </div>
+            <label class="field-label">Sesso</label>
+            <div class="sex-toggle" id="sex-toggle">
+                <button class="sex-btn" id="sex-m" onclick="setSex('M')">♂ Uomo</button>
+                <button class="sex-btn" id="sex-f" onclick="setSex('F')">♀ Donna</button>
+            </div>
+            <button class="btn btn-primary btn-full" style="margin-top:14px;" onclick="saveProfile()">💾 Salva Dati</button>
+        </div>
+
+        <!-- Peso di oggi -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#DBEAFE;">⚖️</div>
+                <div>
+                    <div class="card-title">Peso di Oggi</div>
+                    <div class="card-subtitle">Registra il tuo peso quotidiano</div>
+                </div>
+            </div>
+            <div class="weight-today-row">
+                <div style="flex:1;">
+                    <label class="field-label">Peso (kg)</label>
+                    <input type="number" step="0.1" class="field-input" id="weight-input" placeholder="es. 70.5">
+                </div>
+                <button class="btn btn-primary" onclick="logWeight()">✓ Registra</button>
+            </div>
+
+            <div class="bmi-result" id="bmi-result" style="display:none;">
+                <div class="bmi-value" id="bmi-value">--</div>
+                <div class="bmi-info">
+                    <div class="bmi-cat" id="bmi-cat">--</div>
+                    <div class="bmi-range">Sottopeso &lt;18.5 · Normale 18.5–24.9 · Sovrappeso 25–29.9 · Obeso ≥30</div>
+                </div>
+            </div>
+
+            <div class="weight-stats-row" id="weight-stats" style="display:none;">
+                <div class="w-mini-stat"><div class="w-mini-value" id="w-current">--</div><div class="w-mini-label">Attuale (kg)</div></div>
+                <div class="w-mini-stat"><div class="w-mini-value" id="w-start">--</div><div class="w-mini-label">Iniziale (kg)</div></div>
+                <div class="w-mini-stat"><div class="w-mini-value" id="w-diff">--</div><div class="w-mini-label">Variazione</div></div>
+            </div>
+        </div>
+
+        <!-- Grafico -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#D1FAE5;">📈</div>
+                <div>
+                    <div class="card-title">Andamento del Peso</div>
+                    <div class="card-subtitle">Storico delle registrazioni</div>
+                </div>
+            </div>
+            <div class="weight-chart-wrap">
+                <canvas id="weight-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Storico registrazioni -->
+        <div class="card">
+            <div class="card-title" style="margin-bottom:8px;">📋 Registrazioni Recenti</div>
+            <div id="weight-log-list">
+                <p style="color:var(--text-muted);font-size:0.84rem;text-align:center;padding:12px 0;">Nessuna registrazione ancora.</p>
+            </div>
+        </div>
+
+    </div><!-- end tab-peso -->
+
+
+    <!-- ============================================================ -->
+    <!--  TAB: ALIMENTAZIONE                                           -->
+    <!-- ============================================================ -->
+    <div class="tab" id="tab-alimentazione">
+        <div id="meals-container"></div>
+
+        <!-- Foto pasti -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#FEF3C7;">📸</div>
+                <div>
+                    <div class="card-title">Foto dei Tuoi Pasti</div>
+                    <div class="card-subtitle">Carica una foto per ogni pasto consumato</div>
+                </div>
+            </div>
+            <input type="file" id="meal-photo-input" accept="image/*" style="display:none;" onchange="handleMealPhoto(event)">
+            <div class="photo-upload-zone" onclick="document.getElementById('meal-photo-input').click()">
+                📷 Tocca per caricare una foto del pasto
+            </div>
+            <div class="meal-photos-grid" id="meal-photos-grid"></div>
+        </div>
+    </div>
+
 </main>
 
 <!-- Bottom nav -->
@@ -504,6 +701,12 @@
     </button>
     <button class="nav-btn" id="nav-allenamento" onclick="showTab('allenamento')">
         <span class="ni">💪</span><span>Allenamento</span>
+    </button>
+    <button class="nav-btn" id="nav-alimentazione" onclick="showTab('alimentazione')">
+        <span class="ni">🥗</span><span>Cibo</span>
+    </button>
+    <button class="nav-btn" id="nav-peso" onclick="showTab('peso')">
+        <span class="ni">⚖️</span><span>Peso</span>
     </button>
     <button class="nav-btn" id="nav-progressi" onclick="showTab('progressi')">
         <span class="ni">📊</span><span>Progressi</span>
@@ -548,6 +751,54 @@ const HABITS = [
     { id: "h5", icon: "😴", label: "Dormito 7-8 ore la notte scorsa" },
     { id: "h6", icon: "📖", label: "Letto almeno 10 minuti" },
     { id: "h7", icon: "🙏", label: "Praticato la gratitudine" },
+];
+
+// =====================================================================
+//  MEALS PLANS  (indice = giorno della settimana JS: 0=Dom ... 6=Sab)
+// =====================================================================
+const MEALS = [
+    /* 0 – DOMENICA */
+    {
+        breakfast: { name: "Yogurt greco con frutti di bosco e miele", desc: "Yogurt greco magro con un cucchiaino di miele, frutti di bosco freschi e un cucchiaio di granola integrale. Ricco di proteine e antiossidanti.", kcal: "~300 kcal", yt: "https://www.youtube.com/results?search_query=colazione+sana+yogurt+greco+frutti+di+bosco+ricetta" },
+        lunch: { name: "Insalata di quinoa, ceci e verdure grigliate", desc: "Quinoa lessata con ceci, zucchine e peperoni grigliati, pomodorini e un filo di olio EVO. Piatto unico completo e leggero.", kcal: "~450 kcal", yt: "https://www.youtube.com/results?search_query=insalata+quinoa+ceci+verdure+grigliate+ricetta+sana" },
+        dinner: { name: "Salmone al forno con broccoli al vapore", desc: "Filetto di salmone al forno con limone ed erbe aromatiche, accompagnato da broccoli al vapore conditi con olio EVO.", kcal: "~420 kcal", yt: "https://www.youtube.com/results?search_query=salmone+forno+broccoli+ricetta+sana+leggera" }
+    },
+    /* 1 – LUNEDÌ */
+    {
+        breakfast: { name: "Porridge di avena con banana e cannella", desc: "Fiocchi d'avena cotti nel latte (o bevanda vegetale), banana a fette e un pizzico di cannella. Energia a lungo rilascio per iniziare la settimana.", kcal: "~320 kcal", yt: "https://www.youtube.com/results?search_query=porridge+avena+banana+cannella+ricetta+colazione+sana" },
+        lunch: { name: "Petto di pollo grigliato con riso integrale e verdure", desc: "Petto di pollo alla griglia con spezie, riso integrale e un contorno di carote e fagiolini al vapore.", kcal: "~480 kcal", yt: "https://www.youtube.com/results?search_query=pollo+grigliato+riso+integrale+verdure+ricetta+sana" },
+        dinner: { name: "Zuppa di legumi e verdure", desc: "Zuppa calda di lenticchie, carote, sedano e cipolla, con un filo di olio EVO e pane integrale tostato.", kcal: "~350 kcal", yt: "https://www.youtube.com/results?search_query=zuppa+legumi+verdure+ricetta+sana+leggera" }
+    },
+    /* 2 – MARTEDÌ */
+    {
+        breakfast: { name: "Toast integrale con avocado e uovo", desc: "Fetta di pane integrale tostato con avocado schiacciato, uovo in camicia e pepe. Grassi buoni e proteine per iniziare bene.", kcal: "~340 kcal", yt: "https://www.youtube.com/results?search_query=toast+avocado+uovo+ricetta+colazione+sana" },
+        lunch: { name: "Pasta integrale al pesto di zucchine con gamberetti", desc: "Pasta integrale con pesto fatto in casa di zucchine, basilico e mandorle, saltata con gamberetti.", kcal: "~470 kcal", yt: "https://www.youtube.com/results?search_query=pasta+integrale+pesto+zucchine+gamberetti+ricetta+sana" },
+        dinner: { name: "Frittata di verdure con insalata mista", desc: "Frittata leggera al forno con zucchine, spinaci e cipolla, accompagnata da insalata mista condita con olio EVO e limone.", kcal: "~380 kcal", yt: "https://www.youtube.com/results?search_query=frittata+verdure+forno+ricetta+leggera+sana" }
+    },
+    /* 3 – MERCOLEDÌ */
+    {
+        breakfast: { name: "Smoothie bowl proteico", desc: "Frullato di frutti rossi, banana e proteine in polvere (o yogurt greco), guarnito con semi di chia e frutta fresca a pezzi.", kcal: "~310 kcal", yt: "https://www.youtube.com/results?search_query=smoothie+bowl+proteico+ricetta+colazione+sana" },
+        lunch: { name: "Poke bowl di tonno con riso e edamame", desc: "Riso, tonno fresco marinato, edamame, avocado, carote e cetriolo con salsa di soia leggera.", kcal: "~500 kcal", yt: "https://www.youtube.com/results?search_query=poke+bowl+tonno+riso+edamame+ricetta+sana" },
+        dinner: { name: "Petto di tacchino alla piastra con verdure saltate", desc: "Petto di tacchino alla piastra con spezie, accompagnato da verdure miste saltate in padella con poco olio.", kcal: "~390 kcal", yt: "https://www.youtube.com/results?search_query=petto+tacchino+piastra+verdure+saltate+ricetta+sana" }
+    },
+    /* 4 – GIOVEDÌ */
+    {
+        breakfast: { name: "Pancake proteici integrali con frutta", desc: "Pancake fatti con farina integrale, uova e albumi, serviti con fragole o mirtilli e un filo di miele.", kcal: "~330 kcal", yt: "https://www.youtube.com/results?search_query=pancake+proteici+integrali+ricetta+colazione+sana" },
+        lunch: { name: "Buddha bowl con hummus e verdure crude", desc: "Ciotola ricca con hummus di ceci, carote, cavolo cappuccio, barbabietola e semi di zucca su un letto di verdure a foglia verde.", kcal: "~440 kcal", yt: "https://www.youtube.com/results?search_query=buddha+bowl+hummus+verdure+ricetta+sana" },
+        dinner: { name: "Merluzzo al vapore con purè di patate dolci", desc: "Filetto di merluzzo al vapore con erbe aromatiche, accompagnato da purè leggero di patate dolci.", kcal: "~360 kcal", yt: "https://www.youtube.com/results?search_query=merluzzo+vapore+pure+patate+dolci+ricetta+sana" }
+    },
+    /* 5 – VENERDÌ */
+    {
+        breakfast: { name: "Yogurt con muesli fatto in casa e mela", desc: "Yogurt naturale con muesli di avena, noci e semi tostati in casa, mela a cubetti e un pizzico di cannella.", kcal: "~310 kcal", yt: "https://www.youtube.com/results?search_query=muesli+fatto+in+casa+yogurt+ricetta+colazione+sana" },
+        lunch: { name: "Insalata di farro con tonno e pomodorini", desc: "Farro perlato lessato con tonno al naturale, pomodorini, olive e origano, condito con olio EVO.", kcal: "~460 kcal", yt: "https://www.youtube.com/results?search_query=insalata+farro+tonno+pomodorini+ricetta+sana" },
+        dinner: { name: "Vellutata di zucca con crostini integrali", desc: "Vellutata cremosa di zucca e carote, senza panna, con crostini di pane integrale tostato e semi di zucca.", kcal: "~330 kcal", yt: "https://www.youtube.com/results?search_query=vellutata+zucca+ricetta+leggera+sana" }
+    },
+    /* 6 – SABATO */
+    {
+        breakfast: { name: "Uova strapazzate con spinaci e pane integrale", desc: "Uova strapazzate con spinaci freschi saltati, servite con una fetta di pane integrale tostato.", kcal: "~350 kcal", yt: "https://www.youtube.com/results?search_query=uova+strapazzate+spinaci+ricetta+colazione+sana" },
+        lunch: { name: "Risotto integrale ai funghi con insalata verde", desc: "Risotto con riso integrale, funghi champignon e un tocco di parmigiano, accompagnato da insalata verde.", kcal: "~470 kcal", yt: "https://www.youtube.com/results?search_query=risotto+integrale+funghi+ricetta+sana+leggera" },
+        dinner: { name: "Spiedini di pollo e verdure alla griglia", desc: "Spiedini di petto di pollo marinato con peperoni, zucchine e cipolla, cotti alla griglia o al forno.", kcal: "~400 kcal", yt: "https://www.youtube.com/results?search_query=spiedini+pollo+verdure+griglia+ricetta+sana" }
+    }
 ];
 
 // =====================================================================
@@ -930,6 +1181,9 @@ let S = {
     workoutDone: []
 };
 
+let PROFILE = { height: null, age: null, sex: null };
+let weightChartInstance = null;
+
 let breathActive = false, breathTimer = null, breathRound = 0, breathPhaseIdx = 0;
 const BP = [
     { name: "Inspira", dur: 4, cls: "inhale" },
@@ -959,6 +1213,35 @@ function load() {
     S.workoutDone = d.workoutDone || [];
 }
 
+// ---- Profile ----
+function loadProfile() {
+    const raw = localStorage.getItem('zs-profile');
+    if (raw) { try { PROFILE = JSON.parse(raw); } catch(e) {} }
+}
+function saveProfileStorage() {
+    localStorage.setItem('zs-profile', JSON.stringify(PROFILE));
+}
+
+// ---- Weight log ----
+function loadWeightLog() {
+    const raw = localStorage.getItem('zs-weight-log');
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch(e) { return []; }
+}
+function saveWeightLog(arr) {
+    localStorage.setItem('zs-weight-log', JSON.stringify(arr));
+}
+
+// ---- Meal photos ----
+function loadMealPhotos() {
+    const raw = localStorage.getItem('zs-meal-photos');
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch(e) { return []; }
+}
+function saveMealPhotos(arr) {
+    localStorage.setItem('zs-meal-photos', JSON.stringify(arr));
+}
+
 // =====================================================================
 //  INIT
 // =====================================================================
@@ -968,12 +1251,16 @@ function init() {
         now.toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long' });
 
     load();
+    loadProfile();
     renderQuote();
     renderWater();
     renderMoods();
     renderNotes();
     renderHabits();
     renderWorkout();
+    renderProfileForm();
+    renderMeals();
+    renderMealPhotos();
 }
 
 function renderQuote() {
@@ -991,6 +1278,8 @@ function showTab(name) {
     document.getElementById('tab-' + name).classList.add('active');
     document.getElementById('nav-' + name).classList.add('active');
     if (name === 'progressi') renderProgress();
+    if (name === 'peso') { renderWeightSection(); }
+    if (name === 'alimentazione') { renderMeals(); renderMealPhotos(); }
 }
 
 // =====================================================================
@@ -1138,6 +1427,206 @@ function toggleHabit(id) {
     save(); renderHabits();
     const h = HABITS.find(x => x.id === id);
     if (S.habits[id]) toast('✅ ' + h.label);
+}
+
+// =====================================================================
+//  PESO / BMI / PROFILO
+// =====================================================================
+function renderProfileForm() {
+    if (PROFILE.height) document.getElementById('prof-height').value = PROFILE.height;
+    if (PROFILE.age) document.getElementById('prof-age').value = PROFILE.age;
+    if (PROFILE.sex) {
+        document.getElementById('sex-m').classList.toggle('selected', PROFILE.sex === 'M');
+        document.getElementById('sex-f').classList.toggle('selected', PROFILE.sex === 'F');
+    }
+    renderWeightSection();
+}
+function setSex(sex) {
+    PROFILE.sex = sex;
+    document.getElementById('sex-m').classList.toggle('selected', sex === 'M');
+    document.getElementById('sex-f').classList.toggle('selected', sex === 'F');
+}
+function saveProfile() {
+    const h = parseFloat(document.getElementById('prof-height').value);
+    const a = parseInt(document.getElementById('prof-age').value);
+    if (!h || h < 80 || h > 250) { toast('⚠️ Inserisci un\'altezza valida (cm)'); return; }
+    if (!a || a < 10 || a > 110) { toast('⚠️ Inserisci un\'età valida'); return; }
+    PROFILE.height = h;
+    PROFILE.age = a;
+    saveProfileStorage();
+    toast('💾 Dati salvati!');
+    renderWeightSection();
+}
+function bmiCategory(bmi) {
+    if (bmi < 18.5) return { label: 'Sottopeso', cls: 'underweight' };
+    if (bmi < 25) return { label: 'Peso Normale', cls: 'normal' };
+    if (bmi < 30) return { label: 'Sovrappeso', cls: 'over' };
+    return { label: 'Obesità', cls: 'obese' };
+}
+function logWeight() {
+    const w = parseFloat(document.getElementById('weight-input').value);
+    if (!w || w < 20 || w > 350) { toast('⚠️ Inserisci un peso valido (kg)'); return; }
+    const now = new Date();
+    const dateKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    let log = loadWeightLog();
+    log = log.filter(e => e.dateKey !== dateKey);
+    log.push({ dateKey, date: now.toLocaleDateString('it-IT', { day:'numeric', month:'short' }), weight: w });
+    log.sort((a,b) => a.dateKey.localeCompare(b.dateKey));
+    saveWeightLog(log);
+    document.getElementById('weight-input').value = '';
+    toast('⚖️ Peso registrato: ' + w + ' kg');
+    renderWeightSection();
+}
+function deleteWeightEntry(dateKey) {
+    let log = loadWeightLog();
+    log = log.filter(e => e.dateKey !== dateKey);
+    saveWeightLog(log);
+    renderWeightSection();
+    toast('🗑️ Registrazione eliminata');
+}
+function renderWeightSection() {
+    const log = loadWeightLog();
+
+    // BMI
+    if (log.length && PROFILE.height) {
+        const current = log[log.length - 1].weight;
+        const hM = PROFILE.height / 100;
+        const bmi = current / (hM * hM);
+        const cat = bmiCategory(bmi);
+        document.getElementById('bmi-result').style.display = 'flex';
+        document.getElementById('bmi-value').textContent = bmi.toFixed(1);
+        const catEl = document.getElementById('bmi-cat');
+        catEl.textContent = cat.label;
+        catEl.className = 'bmi-cat ' + cat.cls;
+    } else {
+        document.getElementById('bmi-result').style.display = 'none';
+    }
+
+    // Mini stats
+    if (log.length) {
+        const current = log[log.length - 1].weight;
+        const start = log[0].weight;
+        const diff = current - start;
+        document.getElementById('weight-stats').style.display = 'flex';
+        document.getElementById('w-current').textContent = current.toFixed(1);
+        document.getElementById('w-start').textContent = start.toFixed(1);
+        document.getElementById('w-diff').textContent = (diff >= 0 ? '+' : '') + diff.toFixed(1) + ' kg';
+    } else {
+        document.getElementById('weight-stats').style.display = 'none';
+    }
+
+    // Chart
+    const ctx = document.getElementById('weight-chart');
+    if (ctx && typeof Chart !== 'undefined') {
+        if (weightChartInstance) weightChartInstance.destroy();
+        weightChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: log.map(e => e.date),
+                datasets: [{
+                    label: 'Peso (kg)',
+                    data: log.map(e => e.weight),
+                    borderColor: '#7C3AED',
+                    backgroundColor: 'rgba(124,58,237,0.12)',
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: '#7C3AED',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { ticks: { font: { family: 'Poppins' } } }, x: { ticks: { font: { family: 'Poppins' } } } }
+            }
+        });
+    }
+
+    // Log list
+    const listEl = document.getElementById('weight-log-list');
+    if (!log.length) {
+        listEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.84rem;text-align:center;padding:12px 0;">Nessuna registrazione ancora.</p>';
+    } else {
+        listEl.innerHTML = log.slice().reverse().map(e => `
+            <div class="weight-log-item">
+                <span>${e.date}</span>
+                <span style="font-weight:600;">${e.weight.toFixed(1)} kg</span>
+                <button class="weight-log-del" onclick="deleteWeightEntry('${e.dateKey}')">🗑️</button>
+            </div>
+        `).join('');
+    }
+}
+
+// =====================================================================
+//  ALIMENTAZIONE
+// =====================================================================
+function renderMeals() {
+    const dow = new Date().getDay();
+    const m = MEALS[dow];
+    const c = document.getElementById('meals-container');
+    if (!c) return;
+    const rows = [
+        { key: 'breakfast', icon: '🌅', title: 'Colazione', cls: '' },
+        { key: 'lunch', icon: '☀️', title: 'Pranzo', cls: 'lunch' },
+        { key: 'dinner', icon: '🌙', title: 'Cena', cls: 'dinner' }
+    ];
+    c.innerHTML = rows.map(r => {
+        const meal = m[r.key];
+        return `
+        <div class="card meal-card ${r.cls}">
+            <div class="card-header">
+                <div class="card-icon" style="background:#FFF7ED;">${r.icon}</div>
+                <div>
+                    <div class="card-title">${r.title}</div>
+                    <div class="card-subtitle">Suggerimento salutare di oggi</div>
+                </div>
+            </div>
+            <div class="meal-name">${meal.name}</div>
+            <div class="meal-kcal">🔥 ${meal.kcal}</div>
+            <div class="meal-desc">${meal.desc}</div>
+            ${meal.yt ? `<a href="${meal.yt}" target="_blank" class="recipe-video-link">▶ Video ricetta</a>` : ''}
+        </div>`;
+    }).join('');
+}
+
+function handleMealPhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const photos = loadMealPhotos();
+        const now = new Date();
+        photos.unshift({
+            id: Date.now(),
+            data: e.target.result,
+            date: now.toLocaleDateString('it-IT', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
+        });
+        saveMealPhotos(photos);
+        renderMealPhotos();
+        toast('📸 Foto del pasto caricata!');
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+function deleteMealPhoto(id) {
+    let photos = loadMealPhotos();
+    photos = photos.filter(p => p.id !== id);
+    saveMealPhotos(photos);
+    renderMealPhotos();
+    toast('🗑️ Foto eliminata');
+}
+function renderMealPhotos() {
+    const grid = document.getElementById('meal-photos-grid');
+    if (!grid) return;
+    const photos = loadMealPhotos();
+    grid.innerHTML = photos.map(p => `
+        <div class="meal-photo-item">
+            <img src="${p.data}" alt="Foto pasto">
+            <button class="meal-photo-del" onclick="deleteMealPhoto(${p.id})">✕</button>
+            <div class="meal-photo-tag">${p.date}</div>
+        </div>
+    `).join('');
 }
 
 // =====================================================================
